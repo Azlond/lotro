@@ -1,6 +1,5 @@
 package main;
 
-import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -13,6 +12,7 @@ public class Main {
 		int limit = 150;
 		try {
 			robot = new Robot();
+			robot.setAutoDelay(50);
 			waitTime(5000);
 //			for(int i = 0; i < limit; i++){
 //				doOneField();
