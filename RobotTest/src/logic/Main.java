@@ -1,4 +1,4 @@
-package main;
+package logic;
 
 import java.awt.Robot;
 import java.awt.event.InputEvent;
@@ -8,7 +8,7 @@ public class Main {
 	
 	private static Robot robot;
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		int limit = 150;
 		try {
 			robot = new Robot();
@@ -21,7 +21,7 @@ public class Main {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	public static void doOneField() throws InterruptedException{
 		robot.mouseMove(1085,577);
