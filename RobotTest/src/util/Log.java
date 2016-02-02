@@ -1,9 +1,7 @@
-package log;
+package util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import util.Util;
 
 public class Log {
 	public enum Level{

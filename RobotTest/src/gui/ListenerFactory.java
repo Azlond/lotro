@@ -4,7 +4,7 @@ import data.Keys;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.GridPane;
-import log.Log;
+import util.Log;
 
 public class ListenerFactory {
 	public static ChangeListener<String> getComboActionsListener(GridPane pane){

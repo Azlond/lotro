@@ -16,8 +16,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 
-import log.Log;
-
 public class Util {
 	/**
 	 * 
