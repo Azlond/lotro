@@ -11,16 +11,6 @@ import javafx.stage.Stage;
 import util.GuiUtil;
 
 public class EventHandlerFactory {
-	public static EventHandler<ActionEvent> getNewEventHandler(){
-		return new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent event) {
-				Stage stage = StageFactory.getMainStage();
-				stage.show();
-			}
-		};
-	}
-	
 	public static EventHandler<ActionEvent> getAddActionEventHandler(){
 		return new EventHandler<ActionEvent>(){
 			@Override

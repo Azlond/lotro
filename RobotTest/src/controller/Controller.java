@@ -23,7 +23,6 @@ public class Controller implements Initializable {
 		
 	}
 	
-	
 	@FXML
 	private void moveUp(ActionEvent event){
 		
