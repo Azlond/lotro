@@ -6,10 +6,11 @@ import data.Keys;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import util.Log;
 
 public class ListenerFactory {
-	public static ChangeListener<String> getComboActionsListener(AnchorPane pane){
+	public static ChangeListener<String> getComboActionsListener(AnchorPane pane, Stage stage){
 		return new ChangeListener<String>(){
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

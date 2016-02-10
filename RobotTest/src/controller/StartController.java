@@ -9,14 +9,14 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
-public class StartController implements Initializable {
+public class StartController extends Controller {
 	
 	private KeyPaneController keyController;
 	private WaitPaneController waitController;
@@ -38,8 +38,9 @@ public class StartController implements Initializable {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
+				Stage stage = (Stage) paneLayout.getScene().getWindow();
 				comboAction.itemsProperty().set(FXCollections.observableArrayList(Keys.getActions()));
-				comboAction.getSelectionModel().selectedItemProperty().addListener(ListenerFactory.getComboActionsListener(paneParameter));
+				comboAction.getSelectionModel().selectedItemProperty().addListener(ListenerFactory.getComboActionsListener(paneParameter, stage));
 				comboAction.setValue(Keys.getActions().get(0));
 			}
 		});
