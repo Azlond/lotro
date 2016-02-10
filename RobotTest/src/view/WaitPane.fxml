@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.GridPane?>
+
+
+<GridPane fx:id="paneWait" hgap="10.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controller.WaitPaneController">
+   <children>
+      <Label text="Duration" />
+      <TextField fx:id="tfDuration" promptText="in ms" GridPane.columnIndex="1" />
+   </children>
+</GridPane>

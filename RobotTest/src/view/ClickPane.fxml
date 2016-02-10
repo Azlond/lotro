@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.GridPane?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
+<GridPane fx:id="paneClick" hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ClickPaneController">
+   <children>
+      <TextField fx:id="tfClickX" prefWidth="50.0" GridPane.columnIndex="1" />
+      <Label text="x" />
+      <Label text="y" GridPane.rowIndex="1" />
+      <TextField fx:id="tfClickY" prefWidth="50.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+   </children>
 </GridPane>
-
