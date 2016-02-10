@@ -10,14 +10,20 @@ import javafx.stage.Stage;
 import util.Log;
 
 public class ListenerFactory {
-	public static ChangeListener<String> getComboActionsListener(AnchorPane pane, Stage stage){
+	public static ChangeListener<String> getComboActionsListener(AnchorPane pane){
 		return new ChangeListener<String>(){
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				if(pane == null){
 					Log.log("getComboActionsListener got null as parameter", Log.Level.FATAL);
 				}
+				//clear parameter pane
 				pane.getChildren().removeAll(pane.getChildren());
+				
+				//clear stage event filters
+				Stage stage = (Stage) pane.getScene().getWindow();
+//				stage.removeEventFilter(eventType, ); TODO
+				
 				try{
 					switch(newValue){
 						case Keys.action_wait:

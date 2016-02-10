@@ -40,7 +40,7 @@ public class StartController extends Controller {
 			public void run() {
 				Stage stage = (Stage) paneLayout.getScene().getWindow();
 				comboAction.itemsProperty().set(FXCollections.observableArrayList(Keys.getActions()));
-				comboAction.getSelectionModel().selectedItemProperty().addListener(ListenerFactory.getComboActionsListener(paneParameter, stage));
+				comboAction.getSelectionModel().selectedItemProperty().addListener(ListenerFactory.getComboActionsListener(paneParameter));
 				comboAction.setValue(Keys.getActions().get(0));
 			}
 		});
