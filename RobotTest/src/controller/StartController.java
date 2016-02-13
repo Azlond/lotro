@@ -35,15 +35,11 @@ public class StartController extends Controller {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//Combobox Items setzen und Listener bzgl. Auswahl setzen
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				Stage stage = (Stage) paneLayout.getScene().getWindow();
+		Platform.runLater(() -> {
 				comboAction.itemsProperty().set(FXCollections.observableArrayList(Keys.getActions()));
 				comboAction.getSelectionModel().selectedItemProperty().addListener(ListenerFactory.getComboActionsListener(paneParameter));
 				comboAction.setValue(Keys.getActions().get(0));
-			}
-		});
+			});
 	}
 	
 	@FXML
