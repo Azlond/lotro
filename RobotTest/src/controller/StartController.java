@@ -118,9 +118,9 @@ public class StartController implements Initializable {
 	public SubController getSubControllerFor(String action){
 		switch(action){
 			case Keys.action_click:
-				return this.getDoubleClickController();
-			case Keys.action_doubleClick:
 				return this.getClickController();
+			case Keys.action_doubleClick:
+				return this.getDoubleClickController();
 			case Keys.action_key:
 				return this.getKeyController();
 			case Keys.action_wait:

@@ -14,6 +14,8 @@ import data.Keys;
 public class ClickPaneController extends SubController{
 	@FXML
 	private TextField tfClickX, tfClickY;
+//	@FXML
+//	private TextField tfClickY;
 	
 	private EventHandler<MouseEvent> eventHandler;
 	
@@ -22,7 +24,7 @@ public class ClickPaneController extends SubController{
 	}
 	
 	public StringProperty tfY(){
-		return tfClickX.textProperty();
+		return tfClickY.textProperty();
 	}
 
 	@Override
