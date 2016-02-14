@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import controller.KeyPaneController;
 
 public class EventHandlerFactory {
 	private static EventHandlerFactory factory = new EventHandlerFactory();
@@ -24,11 +25,12 @@ public class EventHandlerFactory {
 	}
 	
 	private EventHandler<KeyEvent> keyEventHandler;
-	public EventHandler<KeyEvent> getKeyEventHandler(TextField tfKey, Label lbKey){
+	public EventHandler<KeyEvent> getKeyEventHandler(TextField tfKey, Label lbKey, KeyPaneController controller){
 		if(keyEventHandler == null){
 			keyEventHandler = (event) -> {
 				tfKey.setText(event.getCharacter());
 				lbKey.setText(event.getCode().getName());
+				controller.setKeyEvent(event);
 			};
 		}
 		return keyEventHandler;
