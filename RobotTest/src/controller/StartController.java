@@ -1,22 +1,24 @@
 package controller;
 
-import gui.ListenerFactory;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import data.Keys;
+import gui.ListenerFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import model.ActionObject;
 import model.ActionQueue;
 import util.Log;
-import data.Keys;
 
 public class StartController implements Initializable {
 	

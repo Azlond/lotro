@@ -8,7 +8,7 @@
 
 <GridPane hgap="10.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="controller.KeyPaneController">
    <children>
-      <Label fx:id="lbKey" text="Key" />
+      <Label fx:id="lbKey" text="Key" prefWidth="100.0"/>
       <TextField fx:id="tfKey" prefWidth="50.0" GridPane.columnIndex="1" />
    </children>
 </GridPane>

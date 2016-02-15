@@ -46,19 +46,7 @@
                                  </padding>
                                  <children>
                                     <Label text="Action" />
-                                    <ComboBox id="comboAction" fx:id="comboAction" prefWidth="150.0" GridPane.columnIndex="1">
-                                    	<items>
-                                    		<FXCollections fx:factory="observableArrayList">
-                                    			<String fx:value="click" />
-                                    			<String fx:value="press key" />
-                                    			<String fx:value="wait" />
-                                    			<String fx:value="double click" />
-                                    		</FXCollections>
-                                    	</items>
-                                    	<value>
-                                    		<String fx:value="click" />
-                                    	</value>
-                                    </ComboBox>
+                                    <ComboBox id="comboAction" fx:id="comboAction" prefWidth="150.0" GridPane.columnIndex="1" />
                                     <Button id="btnAdd" fx:id="btnAdd" mnemonicParsing="false" onAction="#addSequenceElement" prefWidth="385.0" text="Add" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                     <AnchorPane prefHeight="300.0" fx:id="paneParameter" prefWidth="380.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                  </children>

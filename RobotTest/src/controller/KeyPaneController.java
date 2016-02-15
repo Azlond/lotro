@@ -1,5 +1,6 @@
 package controller;
 
+import data.Keys;
 import gui.EventHandlerFactory;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
@@ -11,7 +12,6 @@ import javafx.stage.Stage;
 import model.ActionObject;
 import model.KeyAction;
 import util.Log;
-import data.Keys;
 
 public class KeyPaneController extends SubController {
 	@FXML
@@ -52,14 +52,12 @@ public class KeyPaneController extends SubController {
 	}
 
 	@Override
-	public void addEventFilters() {
-		Stage stage = (Stage)tfKey.getScene().getWindow();
+	public void addEventFilters(Stage stage) {
 		stage.addEventFilter(KeyEvent.KEY_PRESSED, this.getEventHandler());
 	}
 
 	@Override
-	public void removeEventFilters() {
-		Stage stage = (Stage)tfKey.getScene().getWindow();
+	public void removeEventFilters(Stage stage) {
 		stage.removeEventFilter(KeyEvent.KEY_PRESSED, this.getEventHandler());
 	}
 	

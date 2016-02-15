@@ -11,7 +11,7 @@ public final class ControllerFactoryFactory {
 	private static final WaitPaneController waitController = new WaitPaneController();
 	
 	public static Callback<Class<?>, Object> getControllerFactory(){
-		return (param) -> { //TODO fix this shit. find a way to do what was intended to be done with this
+		return (param) -> {
 			if(param == DoubleClickController.class){
 				return doubleClickController;
 			}
@@ -33,7 +33,7 @@ public final class ControllerFactoryFactory {
 		};
 	}
 	
-	public static void initControllers(StartController controller){
+	public static void initSubControllers(StartController controller){
 		controller.setClickController(clickController);
 		controller.setKeyController(keyController);
 		controller.setWaitController(waitController);

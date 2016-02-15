@@ -7,12 +7,12 @@ import javafx.scene.input.KeyEvent;
 public class KeyAction extends ActionObject{
 	
 	private int keyCode;
-	private String keyCharacter;
+	private String keyName;
 
 	public KeyAction(KeyEvent event) {
 		super(Action.key);
-		this.setKeyCharacter(event.getCharacter());
-		//TODO get keyCode from event (maybe deprecated impl_keyCode?)
+		this.setKeyName(event.getCode().getName());
+		this.setKeyCode(event.getCode().impl_getCode());
 	}
 
 	@Override
@@ -33,14 +33,14 @@ public class KeyAction extends ActionObject{
 	
 	@Override
 	public String getActionString() {
-		return "press key >" + this.getKeyCharacter() + "<";
+		return "press key >" + this.getKeyName() + "<";
 	}
 
-	public String getKeyCharacter() {
-		return keyCharacter;
+	public String getKeyName() {
+		return keyName;
 	}
 
-	public void setKeyCharacter(String keyCharacter) {
-		this.keyCharacter = keyCharacter;
+	public void setKeyName(String name) {
+		this.keyName = name;
 	}
 }

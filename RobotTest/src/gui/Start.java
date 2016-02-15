@@ -20,7 +20,7 @@ public class Start extends Application {
 		FXMLLoader loader = new FXMLLoader(Start.class.getResource("/view/Start.fxml"));
 		BorderPane root = loader.load();
 		StartController controller = loader.getController();
-		ControllerFactoryFactory.initControllers(controller);
+		ControllerFactoryFactory.initSubControllers(controller);
 
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);

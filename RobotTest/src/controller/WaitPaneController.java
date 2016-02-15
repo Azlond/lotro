@@ -1,12 +1,13 @@
 package controller;
 
+import data.Keys;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import model.ActionObject;
 import model.WaitAction;
-import data.Keys;
 
 public class WaitPaneController extends SubController{
 	@FXML
@@ -29,12 +30,12 @@ public class WaitPaneController extends SubController{
 	}
 
 	@Override
-	public void addEventFilters() {
+	public void addEventFilters(Stage stage) {
 		//nothing to do
 	}
 
 	@Override
-	public void removeEventFilters() {
+	public void removeEventFilters(Stage stage) {
 		//nothing to do
 	}
 }

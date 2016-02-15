@@ -1,5 +1,6 @@
 package controller;
 
+import data.Keys;
 import gui.EventHandlerFactory;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
@@ -9,15 +10,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.ActionObject;
 import model.ClickAction;
-import data.Keys;
 
 public class ClickPaneController extends SubController{
 	@FXML
-	private TextField tfClickX, tfClickY;
-//	@FXML
-//	private TextField tfClickY;
+	protected TextField tfClickX, tfClickY;
 	
-	private EventHandler<MouseEvent> eventHandler;
+	protected EventHandler<MouseEvent> eventHandler;
 	
 	public StringProperty tfX(){
 		return tfClickX.textProperty();
@@ -40,14 +38,12 @@ public class ClickPaneController extends SubController{
 	}
 	
 	@Override
-	public void addEventFilters() {
-		Stage stage = (Stage)tfClickX.getScene().getWindow();
+	public void addEventFilters(Stage stage) {
 		stage.addEventFilter(MouseEvent.MOUSE_DRAGGED, this.getEventHandler());
 	}
 
 	@Override
-	public void removeEventFilters() {
-		Stage stage = (Stage)tfClickX.getScene().getWindow();
+	public void removeEventFilters(Stage stage) {
 		stage.removeEventFilter(MouseEvent.MOUSE_DRAGGED, this.getEventHandler());
 	}
 	

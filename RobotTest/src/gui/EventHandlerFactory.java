@@ -1,12 +1,12 @@
 package gui;
 
+import controller.KeyPaneController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import controller.KeyPaneController;
 
 public class EventHandlerFactory {
 	private static EventHandlerFactory factory = new EventHandlerFactory();
@@ -28,7 +28,7 @@ public class EventHandlerFactory {
 	public EventHandler<KeyEvent> getKeyEventHandler(TextField tfKey, Label lbKey, KeyPaneController controller){
 		if(keyEventHandler == null){
 			keyEventHandler = (event) -> {
-				tfKey.setText(event.getCharacter());
+				tfKey.setText("" + event.getCode().impl_getCode());
 				lbKey.setText(event.getCode().getName());
 				controller.setKeyEvent(event);
 			};
@@ -38,12 +38,24 @@ public class EventHandlerFactory {
 
 	private EventHandler<MouseEvent> mouseDragEventHandler;
 	public EventHandler<MouseEvent> getMouseDragEventHandler(TextField tfX, TextField tfY){
-		if(mouseDragEventHandler == null){
-			mouseDragEventHandler = (event) -> {
+				if(mouseDragEventHandler == null){
+					mouseDragEventHandler = (event) -> {
+						tfX.setText("" + event.getScreenX());
+						tfY.setText("" + event.getScreenY());
+					};
+				}
+				return mouseDragEventHandler;
+	}
+
+	
+	private EventHandler<MouseEvent> mouseDragDoubleClickEventHandler;
+	public EventHandler<MouseEvent> getMouseDragDoubleClickEventHandler(TextField tfX, TextField tfY){
+		if(mouseDragDoubleClickEventHandler == null){
+			mouseDragDoubleClickEventHandler = (event) -> {
 				tfX.setText("" + event.getScreenX());
 				tfY.setText("" + event.getScreenY());
 			};
 		}
-		return mouseDragEventHandler;
+		return mouseDragDoubleClickEventHandler;
 	}
 }

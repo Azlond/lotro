@@ -2,11 +2,12 @@ package gui;
 
 import java.io.IOException;
 
-import javafx.beans.value.ChangeListener;
-import javafx.scene.layout.AnchorPane;
-import util.Log;
 import controller.StartController;
 import data.Keys;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import util.Log;
 
 public class ListenerFactory {
 	public static ChangeListener<String> getComboActionsListener(AnchorPane pane, StartController controller){
@@ -16,6 +17,12 @@ public class ListenerFactory {
 			}
 			//clear parameter pane
 			pane.getChildren().removeAll(pane.getChildren());
+			
+			Stage stage = (Stage)pane.getScene().getWindow();
+			
+			if(oldValue != null){ //before first selection, there is no oldValue
+				controller.getSubControllerFor(oldValue).removeEventFilters(stage);
+			}
 			
 			try{
 				switch(newValue){
@@ -35,6 +42,8 @@ public class ListenerFactory {
 			} catch(IOException e){
 				Log.log(e);
 			}
+			
+			controller.getSubController().addEventFilters(stage);
 		};
 	}
 }
