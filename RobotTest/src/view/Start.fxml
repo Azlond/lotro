@@ -47,13 +47,21 @@
                                  <children>
                                     <Label text="Action" />
                                     <ComboBox id="comboAction" fx:id="comboAction" prefWidth="150.0" GridPane.columnIndex="1" />
-                                    <HBox spacing="10.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                    <Button id="btnAdd" fx:id="btnAdd" mnemonicParsing="false" onAction="#addSequenceElement" prefWidth="380.0" text="Add" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                    <AnchorPane fx:id="paneParameter" prefHeight="150.0" prefWidth="380.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                    <GridPane hgap="10.0" maxWidth="380.0" prefHeight="150.0" vgap="10.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
                                        <children>
-                                          <Button id="btnAdd" fx:id="btnAdd" mnemonicParsing="false" onAction="#addSequenceElement" prefWidth="185.0" text="Add" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                           <Button fx:id="btnRun" mnemonicParsing="false" onAction="#runActionQueue" prefWidth="185.0" text="Run" />
+                                          <TextField fx:id="tfTimes" GridPane.columnIndex="1" prefWidth="120.0"/>
+                                          <Label text="times" GridPane.columnIndex="2" />
+                                          <HBox alignment="CENTER" prefHeight="150.0" prefWidth="380.0" spacing="10.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                                             <children>
+                                                <Button fx:id="btnRunForever" alignment="CENTER" mnemonicParsing="false" onAction="#runForever" prefWidth="185.0" text="Run forever" />
+                                                <Button fx:id="btnStop" mnemonicParsing="false" onAction="#stop" prefWidth="185.0" text="Stop" />
+                                             </children>
+                                          </HBox>
                                        </children>
-                                    </HBox>
-                                    <AnchorPane fx:id="paneParameter" prefHeight="300.0" prefWidth="380.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                    </GridPane>
                                  </children>
                               </GridPane>
                               <HBox prefWidth="400.0">

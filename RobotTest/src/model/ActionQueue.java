@@ -11,11 +11,12 @@ public class ActionQueue {
 	private ObservableList<String> displayList = FXCollections.observableArrayList(new ArrayList<String>());
 	private ArrayList<ActionObject> actionList = new ArrayList<>();
 	private ListView<String> listView;
-	private Thread runThread;
+	private Thread runThread, runForeverThread;
 	
 	public ActionQueue(ListView<String> listView){
 		this.setListView(listView);
 		this.setRunThread(new ActionThread());
+		this.setRunForeverThread(new ActionLoopThread());
 		Platform.runLater(() -> {
 			listView.setItems(displayList);
 		});
@@ -46,7 +47,17 @@ public class ActionQueue {
 	}
 	
 	public void run(){
+		this.stopThreads();
 		this.getRunThread().start();
+	}
+	
+	public void runForever(){
+		this.stopThreads();
+		this.getRunForeverThread().start();
+	}
+	
+	public void stop(){
+		this.stopThreads();
 	}
 	
 	protected void runSequence(){
@@ -57,6 +68,15 @@ public class ActionQueue {
 			index++;
 		}
 		this.getListView().getSelectionModel().clearSelection();
+	}
+	
+	protected void stopThreads(){
+		if(this.getRunThread().isAlive()){
+			this.getRunThread().interrupt();
+		}
+		if(this.getRunForeverThread().isAlive()){
+			this.getRunForeverThread().interrupt();
+		}
 	}
 
 	protected ObservableList<String> getDisplayList() {
@@ -87,10 +107,30 @@ public class ActionQueue {
 		this.runThread = runThread;
 	}
 	
+	public Thread getRunForeverThread() {
+		return runForeverThread;
+	}
+	public void setRunForeverThread(Thread runForeverThread) {
+		this.runForeverThread = runForeverThread;
+	}
+
 	private class ActionThread extends Thread{
 		@Override
 		public void run(){
-			ActionQueue.this.runSequence();
+			synchronized(ActionQueue.this.getListView()){
+				ActionQueue.this.runSequence();
+				ActionQueue.this.getListView().notifyAll();
+			}
+		}
+	}
+	private class ActionLoopThread extends Thread{
+		@Override
+		public void run(){
+			synchronized(ActionQueue.this.getListView()){
+				while(true){
+					ActionQueue.this.runSequence();
+				}
+			}
 		}
 	}
 	

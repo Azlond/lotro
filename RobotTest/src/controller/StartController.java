@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import model.ActionObject;
@@ -23,7 +24,7 @@ import util.Log;
 public class StartController implements Initializable {
 	
 	@FXML
-	private Button btnUp, btnDown, btnDelete, btnDuplicate, btnAdd, btnRun;
+	private Button btnUp, btnDown, btnDelete, btnDuplicate, btnAdd, btnRun, btnRunForever, btnStop;
 	@FXML
 	private ComboBox<String> comboAction;
 	@FXML
@@ -32,6 +33,8 @@ public class StartController implements Initializable {
 	private BorderPane paneLayout;
 	@FXML
 	private AnchorPane paneParameter;
+	@FXML
+	private TextField tfTimes;
 	
 	private KeyPaneController keyController;
 	private WaitPaneController waitController;
@@ -53,8 +56,40 @@ public class StartController implements Initializable {
 	}
 	
 	@FXML
+	private void runForever(ActionEvent event){
+		new Thread(() ->{
+		synchronized(lvActions){
+			btnAdd.setDisable(true);
+			this.getActionList().runForever();
+			this.waitForEnable();
+		}
+		}).start();
+	}
+
+	protected void waitForEnable() {
+		try {
+			lvActions.wait();
+		} catch (InterruptedException e) {
+			Log.log(e);
+		} finally{
+			btnAdd.setDisable(false);
+		}
+	}
+
+	@FXML
+	private void stop(ActionEvent event){
+		this.getActionList().stop();
+	}
+	
+	@FXML
 	private void runActionQueue(ActionEvent event){
-		this.getActionList().run();
+		new Thread(() ->{
+		synchronized(lvActions){
+			btnAdd.setDisable(true);
+			this.getActionList().run();
+			this.waitForEnable();
+		}
+		}).start();
 	}
 
 	@FXML
@@ -79,8 +114,10 @@ public class StartController implements Initializable {
 
 	@FXML
 	private void addSequenceElement(ActionEvent event){
-		ActionObject newAction = this.getSubController().getActionObject();
-		this.getActionList().addItem(newAction);
+		synchronized(lvActions){
+			ActionObject newAction = this.getSubController().getActionObject();
+			this.getActionList().addItem(newAction);
+		}
 	}
 
 	public KeyPaneController getKeyController() {
@@ -144,5 +181,4 @@ public class StartController implements Initializable {
 	protected void setActionList(ActionQueue actionList) {
 		this.actionList = actionList;
 	}
-
 }
