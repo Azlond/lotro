@@ -23,7 +23,7 @@ import util.Log;
 public class StartController implements Initializable {
 	
 	@FXML
-	private Button btnUp, btnDown, btnDelete, btnDuplicate, btnAdd;
+	private Button btnUp, btnDown, btnDelete, btnDuplicate, btnAdd, btnRun;
 	@FXML
 	private ComboBox<String> comboAction;
 	@FXML
@@ -50,6 +50,11 @@ public class StartController implements Initializable {
 				this.setActionList(new ActionQueue(lvActions));
 				lvActions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 			});
+	}
+	
+	@FXML
+	private void runActionQueue(ActionEvent event){
+		this.getActionList().run();
 	}
 
 	@FXML

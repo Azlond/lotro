@@ -10,8 +10,12 @@ import javafx.scene.control.ListView;
 public class ActionQueue {
 	private ObservableList<String> displayList = FXCollections.observableArrayList(new ArrayList<String>());
 	private ArrayList<ActionObject> actionList = new ArrayList<>();
+	private ListView<String> listView;
+	private Thread runThread;
 	
 	public ActionQueue(ListView<String> listView){
+		this.setListView(listView);
+		this.setRunThread(new ActionThread());
 		Platform.runLater(() -> {
 			listView.setItems(displayList);
 		});
@@ -40,6 +44,20 @@ public class ActionQueue {
 		this.removeItem(index);
 		this.addItem(actionItem, index - 1);
 	}
+	
+	public void run(){
+		this.getRunThread().start();
+	}
+	
+	protected void runSequence(){
+		int index = 0;
+		for(ActionObject action : this.getActionList()){
+			this.getListView().getSelectionModel().clearAndSelect(index);
+			action.perform();
+			index++;
+		}
+		this.getListView().getSelectionModel().clearSelection();
+	}
 
 	protected ObservableList<String> getDisplayList() {
 		return displayList;
@@ -53,6 +71,27 @@ public class ActionQueue {
 	}
 	protected void setActionList(ArrayList<ActionObject> actionList) {
 		this.actionList = actionList;
+	}
+
+	protected ListView<String> getListView() {
+		return listView;
+	}
+	protected void setListView(ListView<String> listView) {
+		this.listView = listView;
+	}
+
+	public Thread getRunThread() {
+		return runThread;
+	}
+	public void setRunThread(Thread runThread) {
+		this.runThread = runThread;
+	}
+	
+	private class ActionThread extends Thread{
+		@Override
+		public void run(){
+			ActionQueue.this.runSequence();
+		}
 	}
 	
 }
