@@ -1,11 +1,14 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
+import util.Util;
 
 public class ActionQueue {
 	private ObservableList<String> displayList = FXCollections.observableArrayList(new ArrayList<String>());
@@ -31,13 +34,17 @@ public class ActionQueue {
 	}
 	
 	public void addItem(ActionObject object){
-		this.getDisplayList().add(object.getActionString());
-		this.getActionList().add(object);
+		if(object != null && object.getActionString() != null){
+			this.getDisplayList().add(object.getActionString());
+			this.getActionList().add(object);
+		}
 	}
 	
 	public void addItem(ActionObject object, int index){
-		this.getDisplayList().add(index, object.getActionString());
-		this.getActionList().add(index, object);
+		if(object != null && object.getActionString() != null){
+			this.getDisplayList().add(index, object.getActionString());
+			this.getActionList().add(index, object);
+		}
 	}
 	
 	public void removeItem(int index){
@@ -45,13 +52,82 @@ public class ActionQueue {
 		this.getActionList().remove(index);
 	}
 	
-	public void moveItemUp(int index){
-		if(index == 0){
+	/**
+	 * moves the selected items one space<br/>
+	 * <br/>
+	 * triggers only one event
+	 * @param direction +1/-1
+	 * @param indices sorted Array of indices
+	 * @return
+	 */
+	public int[] shiftItems(int[] indices, int direction){
+		ObservableList<String> listCopy = FXCollections.observableArrayList(this.getDisplayList());
+		ArrayList<ActionObject> objectList = this.getActionList();
+		for(int index : indices){
+			{
+				String item = listCopy.get(index);
+				listCopy.remove(index);
+				listCopy.add(index - direction, item);
+			}
+			{
+				ActionObject item = objectList.get(index);
+				objectList.remove(index);
+				objectList.add(index - direction, item);
+			}
+		}
+		this.setDisplayList(listCopy);
+		this.getListView().setItems(listCopy);
+		for(int i = 0; i < indices.length; i++){
+			indices[i] -= direction;
+		}
+		return indices;
+	}
+	
+	public int[] checkBoundariesAndMove(int[] indices, int direction){
+		Arrays.sort(indices);
+		if(direction == -1){
+			
+			for(int i : indices){
+				//check if bottom element is selected
+				if(i == this.getActionList().size() - 1){
+					return indices;
+				}
+			}
+			//revert sort
+			int[] sorted = new int[indices.length];
+			for(int i = 0; i < indices.length; i++){
+				sorted[i] = indices[indices.length - i - 1];
+			}
+			indices = sorted;
+			
+		} else{
+			
+			for(int i : indices){
+				//check if top element is selected
+				if(i == 0){
+					return indices;
+				}
+			}
+		}
+		return this.shiftItems(indices, direction);
+	}
+	
+	/**
+	 * @param direction +1/-1
+	 */
+	public void moveItems(int direction){
+		List<Integer> indices = new ArrayList<Integer>(this.getListView().getSelectionModel().getSelectedIndices());
+		if(indices.isEmpty() || Math.abs(direction) != 1){
 			return;
 		}
-		ActionObject actionItem = this.getActionList().get(index);
-		this.removeItem(index);
-		this.addItem(actionItem, index - 1);
+		int[] newSelection = this.checkBoundariesAndMove(Util.toIntArray(indices), direction);
+		
+		if(indices.size() > 1){
+			this.getListView().getSelectionModel().clearSelection();
+			this.getListView().getSelectionModel().selectIndices(newSelection[0], newSelection);
+		} else{
+			this.getListView().getSelectionModel().clearAndSelect(newSelection[0]);
+		}
 	}
 	
 	public void run(){

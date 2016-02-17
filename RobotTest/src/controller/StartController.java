@@ -1,11 +1,5 @@
 package controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,7 +17,6 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.FileChooser;
 import model.ActionObject;
 import model.ActionQueue;
 import util.Log;
@@ -64,6 +57,10 @@ public class StartController implements Initializable {
 	
 	/**
 	 * saving a chosen configuration
+	 * 
+	 * maybe making ActionQueue Serializable and serializing/unserializing it is easier?
+	 * also solves the KeyEvent problem. makes creating "saves" by editing a textfile impossible though
+	 * 
 	 * @param event
 	 */
 	
@@ -73,7 +70,7 @@ public class StartController implements Initializable {
 		String content = "";
 
 		for (String s : this.getActionList().getDisplayList()) { // saving the actions in clear text
-			content = content.concat(s).concat("\n");
+			content = content.concat(s).concat("\r\n");
 		}
 
 		FileChooser saveFile = new FileChooser();
@@ -162,7 +159,7 @@ public class StartController implements Initializable {
 	private void runForever(ActionEvent event) {
 		new Thread(() -> {
 			synchronized (lvActions) {
-				btnAdd.setDisable(true);
+				this.setStatusOfListRelatedButtons(false);
 				this.getActionList().runForever();
 				this.waitForEnable();
 			}
@@ -175,8 +172,17 @@ public class StartController implements Initializable {
 		} catch (InterruptedException e) {
 			Log.log(e);
 		} finally {
-			btnAdd.setDisable(false);
+			this.setStatusOfListRelatedButtons(true);
 		}
+	}
+	
+	protected void setStatusOfListRelatedButtons(boolean enabled){
+		boolean disable = !enabled;
+		btnAdd.setDisable(disable);
+		btnUp.setDisable(disable);
+		btnDown.setDisable(disable);
+		btnDelete.setDisable(disable);
+		btnDuplicate.setDisable(disable);
 	}
 
 	@FXML
@@ -188,7 +194,7 @@ public class StartController implements Initializable {
 	private void runActionQueue(ActionEvent event) {
 		new Thread(() -> {
 			synchronized (lvActions) {
-				btnAdd.setDisable(true);
+				this.setStatusOfListRelatedButtons(false);
 				this.getActionList().run();
 				this.waitForEnable();
 			}
@@ -197,22 +203,30 @@ public class StartController implements Initializable {
 
 	@FXML
 	private void moveUp(ActionEvent event) {
-
+		synchronized(lvActions){
+			this.getActionList().moveItems(1);
+		}
 	}
 
 	@FXML
 	private void moveDown(ActionEvent event) {
-
+		synchronized(lvActions){
+			this.getActionList().moveItems(-1);
+		}
 	}
 
 	@FXML
 	private void deleteSelected(ActionEvent event) {
-
+		synchronized(lvActions){
+			
+		}
 	}
 
 	@FXML
 	private void duplicateSelected(ActionEvent event) {
-
+		synchronized(lvActions){
+			
+		}
 	}
 
 	@FXML

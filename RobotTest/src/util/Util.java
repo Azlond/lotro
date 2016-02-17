@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -356,5 +357,10 @@ public class Util {
 		PrintWriter printwriter = new PrintWriter(stringwriter);
 		e.printStackTrace(printwriter);
 		return stringwriter.toString();
+	}
+	
+	public static int[] toIntArray(List<Integer> list){
+		int[] result = list.stream().mapToInt(i -> i).toArray();
+		return result;
 	}
 }
