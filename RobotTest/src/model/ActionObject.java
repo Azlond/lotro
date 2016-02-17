@@ -29,23 +29,15 @@ public abstract class ActionObject {
 	protected ActionObject(Action action){
 	}
 	
-	public abstract void perform();
+	public abstract void perform() throws InterruptedException;
 	public abstract String getActionString();
 	
-	public void sleep(int ms){
-		try {
-			Thread.sleep(ms);
-		} catch(InterruptedException e) {
-			Log.log(e);
-		}
+	public void sleep(int ms) throws InterruptedException{
+		Thread.sleep(ms);
 	}
 	
-	public void sleep(){
-		try {
-			Thread.sleep(WAIT_BETWEEN_EVENTS);
-		} catch(InterruptedException e) {
-			Log.log(e);
-		}
+	public void sleep() throws InterruptedException{
+		Thread.sleep(WAIT_BETWEEN_EVENTS);
 	}
 
 	public Action getAction() {

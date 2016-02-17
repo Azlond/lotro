@@ -16,7 +16,7 @@ public class KeyAction extends ActionObject{
 	}
 
 	@Override
-	public void perform() {
+	public void perform() throws InterruptedException{
 		Robot robot = getRobot();
 		robot.keyPress(this.getKeyCode());
 		this.sleep();

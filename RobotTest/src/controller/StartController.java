@@ -158,17 +158,17 @@ public class StartController implements Initializable {
 	@FXML
 	private void runForever(ActionEvent event) {
 		new Thread(() -> {
-			synchronized (lvActions) {
-				this.setStatusOfListRelatedButtons(false);
-				this.getActionList().runForever();
-				this.waitForEnable();
-			}
+			this.setStatusOfListRelatedButtons(false);
+			this.getActionList().runForever();
+			this.waitForEnable();
 		}).start();
 	}
 
 	protected void waitForEnable() {
 		try {
-			lvActions.wait();
+			synchronized(lvActions){
+				lvActions.wait();
+			}
 		} catch (InterruptedException e) {
 			Log.log(e);
 		} finally {
@@ -193,11 +193,9 @@ public class StartController implements Initializable {
 	@FXML
 	private void runActionQueue(ActionEvent event) {
 		new Thread(() -> {
-			synchronized (lvActions) {
-				this.setStatusOfListRelatedButtons(false);
-				this.getActionList().run();
-				this.waitForEnable();
-			}
+			this.setStatusOfListRelatedButtons(false);
+			this.getActionList().run();
+			this.waitForEnable();
 		}).start();
 	}
 

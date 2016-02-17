@@ -8,7 +8,7 @@ public class DoubleClickAction extends ClickAction {
 	}
 	
 	@Override
-	public void perform(){
+	public void perform() throws InterruptedException{
 		super.perform();
 		super.perform();
 	}

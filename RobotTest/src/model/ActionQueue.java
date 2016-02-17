@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
+import util.Log;
 import util.Util;
 
 public class ActionQueue {
@@ -132,19 +133,19 @@ public class ActionQueue {
 	
 	public void run(){
 		this.stopThreads();
-		this.getRunThread().start();
+		this.startRunThread();
 	}
 	
 	public void runForever(){
 		this.stopThreads();
-		this.getRunForeverThread().start();
+		this.startRunForeverThread();
 	}
 	
 	public void stop(){
 		this.stopThreads();
 	}
 	
-	protected void runSequence(){
+	protected void runSequence() throws InterruptedException{
 		int index = 0;
 		for(ActionObject action : this.getActionList()){
 			this.getListView().getSelectionModel().clearAndSelect(index);
@@ -155,13 +156,25 @@ public class ActionQueue {
 	}
 	
 	protected void stopThreads(){
-		if(this.getRunThread().isAlive()){
-			this.getRunThread().interrupt();
+		Log.log("attempting to stop Threads", Log.Level.DEBUG);
+		try {
+			if(this.getRunThread().isAlive()){
+				this.getRunThread().interrupt();
+				this.getRunThread().join();
+			}
+		} catch (InterruptedException e) {
+			Log.log(e, Log.Level.TRACE);
 		}
-		if(this.getRunForeverThread().isAlive()){
-			this.getRunForeverThread().interrupt();
+		try {
+			if(this.getRunForeverThread().isAlive()){
+				this.getRunForeverThread().interrupt();
+				this.getRunForeverThread().join();
+			}
+		} catch (InterruptedException e) {
+			Log.log(e, Log.Level.TRACE);
 		}
 	}
+
 
 	protected ObservableList<String> getDisplayList() {
 		return displayList;
@@ -184,17 +197,30 @@ public class ActionQueue {
 		this.listView = listView;
 	}
 
+	public void startRunThread(){
+		if(!this.getRunThread().isAlive()){
+			this.setRunThread(new ActionThread());
+			this.getRunThread().start();
+		}
+	}
 	public Thread getRunThread() {
 		return runThread;
 	}
 	public void setRunThread(Thread runThread) {
+		runThread.setDaemon(true);
 		this.runThread = runThread;
 	}
 	
+	public void startRunForeverThread(){
+		this.setRunForeverThread(new ActionLoopThread());
+		this.getRunForeverThread().start();
+		Log.log("new runForeverThread started", Log.Level.DEBUG);
+	}
 	public Thread getRunForeverThread() {
 		return runForeverThread;
 	}
 	public void setRunForeverThread(Thread runForeverThread) {
+		runForeverThread.setDaemon(true);
 		this.runForeverThread = runForeverThread;
 	}
 
@@ -202,20 +228,32 @@ public class ActionQueue {
 		@Override
 		public void run(){
 			synchronized(ActionQueue.this.getListView()){
-				ActionQueue.this.runSequence();
-				ActionQueue.this.getListView().notifyAll();
-			}
-		}
-	}
-	private class ActionLoopThread extends Thread{
-		@Override
-		public void run(){
-			synchronized(ActionQueue.this.getListView()){
-				while(true){
+				try {
 					ActionQueue.this.runSequence();
+				} catch (InterruptedException e) {
+					Log.log(e, Log.Level.TRACE);
+				} finally{
+					ActionQueue.this.getListView().notifyAll();
 				}
+				
 			}
 		}
 	}
 	
+	private class ActionLoopThread extends Thread{
+		@Override
+		public void run(){
+			synchronized(ActionQueue.this.getListView()){
+				try{
+					while(true){
+						ActionQueue.this.runSequence();
+					}
+				} catch(InterruptedException e){
+					Log.log(e, Log.Level.TRACE);
+				} finally{
+					ActionQueue.this.getListView().notifyAll();
+				}
+			}
+		}
+	}
 }

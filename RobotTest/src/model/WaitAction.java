@@ -10,7 +10,7 @@ public class WaitAction extends ActionObject {
 	}
 
 	@Override
-	public void perform() {
+	public void perform() throws InterruptedException{
 		this.sleep(this.getDuration());
 	}
 	

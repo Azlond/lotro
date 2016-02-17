@@ -28,7 +28,7 @@ public class ClickAction extends ActionObject {
 	}
 
 	@Override
-	public void perform() {
+	public void perform() throws InterruptedException {
 		Robot robot = getRobot();
 		robot.mouseMove(this.getX(), this.getY());
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
