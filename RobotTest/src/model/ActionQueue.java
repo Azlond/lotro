@@ -22,6 +22,14 @@ public class ActionQueue {
 		});
 	}
 	
+	/*
+	 * XXX Clearing the list - needed for loading
+	 */
+	public void clearLists() {
+		this.getDisplayList().clear();
+		this.getActionList().clear();
+	}
+	
 	public void addItem(ActionObject object){
 		this.getDisplayList().add(object.getActionString());
 		this.getActionList().add(object);

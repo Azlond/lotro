@@ -28,6 +28,13 @@ public class WaitPaneController extends SubController{
 	public ActionObject getActionObject() {
 		return new WaitAction(Integer.valueOf(this.tfDuration().getValue()));
 	}
+	
+	/*
+	 * needed for loading XXX
+	 */
+	public ActionObject getActionObject(int ms) {
+		return new WaitAction(ms);
+	}
 
 	@Override
 	public void addEventFilters(Stage stage) {

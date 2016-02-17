@@ -19,6 +19,13 @@ public class DoubleClickController extends ClickPaneController {
 		double y = Double.valueOf(this.tfY().getValue().trim());
 		return new DoubleClickAction(x, y);
 	}
+	
+	/*
+	 * needed for loading XXX
+	 */
+	public ActionObject getActionObject(int x, int y) {
+		return new DoubleClickAction(x, y);
+	}
 
 	@Override
 	protected EventHandler<MouseEvent> getEventHandler() {
