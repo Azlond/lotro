@@ -83,6 +83,15 @@ public class ActionQueue {
 		this.getDisplayList().addAll(sortedStringCopies);
 	}
 
+	public void edit(){
+		/* TODO think about how to implement edit
+		 * thoughts so far:
+		 * - ending the edit mode can neither be by key combo nor by mouseclick (because of the event filters)
+		 *  -> a combination? key when setting clicks, click when setting keys
+		 * - lock the action selection and disable all buttons until edit mode is lifted
+		 */
+	}
+
 	/**
 	 * moves the selected items one space<br/>
 	 * <br/>

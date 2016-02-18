@@ -24,7 +24,7 @@ import util.Log;
 public class StartController implements Initializable {
 
 	@FXML
-	private Button btnUp, btnDown, btnDelete, btnDuplicate, btnAdd, btnRun, btnRunForever, btnStop;
+	private Button btnUp, btnDown, btnDelete, btnDuplicate, btnAdd, btnRun, btnRunForever, btnStop, btnEdit;
 	@FXML
 	private ComboBox<String> comboAction;
 	@FXML
@@ -54,7 +54,7 @@ public class StartController implements Initializable {
 			lvActions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		});
 	}
-	
+
 	/**
 	 * saving a chosen configuration
 	 * 
@@ -63,7 +63,7 @@ public class StartController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	
+
 	@FXML
 	void saveToFile(ActionEvent event) {
 		/*
@@ -86,8 +86,8 @@ public class StartController implements Initializable {
 				Log.log(ex);
 			}
 		}
-		
-		*/
+
+		 */
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class StartController implements Initializable {
 	 * 
 	 * @param event
 	 */
-	
+
 	@FXML
 	void loadFromFile(ActionEvent event) {
 		/*
@@ -112,7 +112,7 @@ public class StartController implements Initializable {
 				BufferedReader reader = new BufferedReader(new FileReader(file));
 				String line = null;
 				int index = 0;
-				while ((line = reader.readLine()) != null) { //read until file is done 
+				while ((line = reader.readLine()) != null) { //read until file is done
 
 					if (line.contains("press key")) {
 						char c = line.substring(11, 12).charAt(0);
@@ -151,10 +151,10 @@ public class StartController implements Initializable {
 			}
 
 		}
-	*/
+		 */
 	}
-	
-	
+
+
 	@FXML
 	private void runForever(ActionEvent event) {
 		new Thread(() -> {
@@ -176,7 +176,7 @@ public class StartController implements Initializable {
 			}
 		}).start();
 	}
-	
+
 	protected void setStatusOfListRelatedButtons(boolean enabled){
 		boolean disable = !enabled;
 		btnAdd.setDisable(disable);
@@ -185,7 +185,7 @@ public class StartController implements Initializable {
 		btnDelete.setDisable(disable);
 		btnDuplicate.setDisable(disable);
 	}
-	
+
 	protected void disableButtonsUntilNotified(){
 		this.setStatusOfListRelatedButtons(false);
 		this.waitForEnable();
@@ -238,6 +238,11 @@ public class StartController implements Initializable {
 			ActionObject newAction = this.getSubController().getActionObject();
 			this.getActionList().addItem(newAction);
 		}
+	}
+
+	@FXML
+	private void editAction(ActionEvent event){
+		this.getActionList().edit();
 	}
 
 	public KeyPaneController getKeyController() {
