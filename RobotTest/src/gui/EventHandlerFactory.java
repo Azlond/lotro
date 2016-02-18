@@ -31,6 +31,7 @@ public class EventHandlerFactory {
 				tfKey.setText("" + event.getCode().impl_getCode());
 				lbKey.setText(event.getCode().getName());
 				controller.setKeyEvent(event);
+				event.consume();
 			};
 		}
 		return keyEventHandler;

@@ -16,7 +16,7 @@ public class ActionQueue {
 	private ArrayList<ActionObject> actionList = new ArrayList<>();
 	private ListView<String> listView;
 	private Thread runThread, runForeverThread;
-	
+
 	public ActionQueue(ListView<String> listView){
 		this.setListView(listView);
 		this.setRunThread(new ActionThread());
@@ -25,7 +25,7 @@ public class ActionQueue {
 			listView.setItems(displayList);
 		});
 	}
-	
+
 	/*
 	 * XXX Clearing the list - needed for loading
 	 */
@@ -33,26 +33,56 @@ public class ActionQueue {
 		this.getDisplayList().clear();
 		this.getActionList().clear();
 	}
-	
+
 	public void addItem(ActionObject object){
 		if(object != null && object.getActionString() != null){
 			this.getDisplayList().add(object.getActionString());
 			this.getActionList().add(object);
 		}
 	}
-	
-	public void addItem(ActionObject object, int index){
+
+	protected void addItem(ActionObject object, int index){
 		if(object != null && object.getActionString() != null){
 			this.getDisplayList().add(index, object.getActionString());
 			this.getActionList().add(index, object);
 		}
 	}
-	
-	public void removeItem(int index){
-		this.getDisplayList().remove(index);
-		this.getActionList().remove(index);
+
+	/**
+	 * removes the selected Items<br/>
+	 * triggers only one event
+	 */
+	public void removeSelectedItems(){
+		int[] selectedIndices = Util.toIntArray(this.getListView().getSelectionModel().getSelectedIndices());
+		Arrays.sort(selectedIndices);
+		ObservableList<String> displayCopy = FXCollections.observableArrayList(this.getDisplayList());
+
+		for(int index = selectedIndices.length - 1; index >= 0; index--){
+			displayCopy.remove(selectedIndices[index]);
+			this.getActionList().remove(selectedIndices[index]);
+		}
+		this.setDisplayList(displayCopy);
+		this.getListView().setItems(displayCopy);
+		this.getListView().getSelectionModel().clearSelection();
 	}
-	
+
+	/**
+	 * creates a copy of every Action currently selected and inserts it at the end of the list
+	 */
+	public void duplicateSelectedItems(){
+		int[] selectedIndices = Util.toIntArray(this.getListView().getSelectionModel().getSelectedIndices());
+		Arrays.sort(selectedIndices);
+		List<ActionObject> sortedCopies = new ArrayList<ActionObject>();
+		List<String> sortedStringCopies = new ArrayList<String>();
+		for(int i : selectedIndices){
+			sortedCopies.add(this.getActionList().get(i).getCopy());
+			sortedStringCopies.add(new String(this.getDisplayList().get(i)));
+		}
+
+		this.getActionList().addAll(sortedCopies);
+		this.getDisplayList().addAll(sortedStringCopies);
+	}
+
 	/**
 	 * moves the selected items one space<br/>
 	 * <br/>
@@ -83,11 +113,11 @@ public class ActionQueue {
 		}
 		return indices;
 	}
-	
+
 	public int[] checkBoundariesAndMove(int[] indices, int direction){
 		Arrays.sort(indices);
 		if(direction == -1){
-			
+
 			for(int i : indices){
 				//check if bottom element is selected
 				if(i == this.getActionList().size() - 1){
@@ -100,9 +130,9 @@ public class ActionQueue {
 				sorted[i] = indices[indices.length - i - 1];
 			}
 			indices = sorted;
-			
+
 		} else{
-			
+
 			for(int i : indices){
 				//check if top element is selected
 				if(i == 0){
@@ -112,7 +142,7 @@ public class ActionQueue {
 		}
 		return this.shiftItems(indices, direction);
 	}
-	
+
 	/**
 	 * @param direction +1/-1
 	 */
@@ -122,7 +152,7 @@ public class ActionQueue {
 			return;
 		}
 		int[] newSelection = this.checkBoundariesAndMove(Util.toIntArray(indices), direction);
-		
+
 		if(indices.size() > 1){
 			this.getListView().getSelectionModel().clearSelection();
 			this.getListView().getSelectionModel().selectIndices(newSelection[0], newSelection);
@@ -130,21 +160,21 @@ public class ActionQueue {
 			this.getListView().getSelectionModel().clearAndSelect(newSelection[0]);
 		}
 	}
-	
+
 	public void run(){
 		this.stopThreads();
 		this.startRunThread();
 	}
-	
+
 	public void runForever(){
 		this.stopThreads();
 		this.startRunForeverThread();
 	}
-	
+
 	public void stop(){
 		this.stopThreads();
 	}
-	
+
 	protected void runSequence() throws InterruptedException{
 		int index = 0;
 		for(ActionObject action : this.getActionList()){
@@ -154,7 +184,7 @@ public class ActionQueue {
 		}
 		this.getListView().getSelectionModel().clearSelection();
 	}
-	
+
 	protected void stopThreads(){
 		Log.log("attempting to stop Threads", Log.Level.DEBUG);
 		try {
@@ -210,7 +240,7 @@ public class ActionQueue {
 		runThread.setDaemon(true);
 		this.runThread = runThread;
 	}
-	
+
 	public void startRunForeverThread(){
 		this.setRunForeverThread(new ActionLoopThread());
 		this.getRunForeverThread().start();
@@ -235,11 +265,11 @@ public class ActionQueue {
 				} finally{
 					ActionQueue.this.getListView().notifyAll();
 				}
-				
+
 			}
 		}
 	}
-	
+
 	private class ActionLoopThread extends Thread{
 		@Override
 		public void run(){

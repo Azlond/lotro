@@ -221,14 +221,14 @@ public class StartController implements Initializable {
 	@FXML
 	private void deleteSelected(ActionEvent event) {
 		synchronized(lvActions){
-			
+			this.getActionList().removeSelectedItems();
 		}
 	}
 
 	@FXML
 	private void duplicateSelected(ActionEvent event) {
 		synchronized(lvActions){
-			
+			this.getActionList().duplicateSelectedItems();
 		}
 	}
 

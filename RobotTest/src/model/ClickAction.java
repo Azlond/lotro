@@ -42,4 +42,9 @@ public class ClickAction extends ActionObject {
 		return "click at (" + this.getX() + "|" + this.getY() + ")";
 	}
 	
+	@Override
+	public ActionObject getCopy(){
+		return new ClickAction(this.getX(), this.getY());
+	}
+	
 }

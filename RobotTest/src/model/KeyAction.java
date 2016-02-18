@@ -5,7 +5,7 @@ import java.awt.Robot;
 import javafx.scene.input.KeyEvent;
 
 public class KeyAction extends ActionObject{
-	
+
 	private int keyCode;
 	private String keyName;
 
@@ -13,6 +13,12 @@ public class KeyAction extends ActionObject{
 		super(Action.key);
 		this.setKeyName(event.getCode().getName());
 		this.setKeyCode(event.getCode().impl_getCode());
+	}
+
+	protected KeyAction(int keyCode, String keyName){
+		super(Action.key);
+		this.setKeyName(keyName);
+		this.setKeyCode(keyCode);
 	}
 
 	@Override
@@ -30,7 +36,7 @@ public class KeyAction extends ActionObject{
 	public void setKeyCode(int keyCode) {
 		this.keyCode = keyCode;
 	}
-	
+
 	@Override
 	public String getActionString() {
 		return "press key >" + this.getKeyName() + "<";
@@ -42,5 +48,10 @@ public class KeyAction extends ActionObject{
 
 	public void setKeyName(String name) {
 		this.keyName = name;
+	}
+
+	@Override
+	public ActionObject getCopy(){
+		return new KeyAction(this.getKeyCode(), this.getKeyName());
 	}
 }

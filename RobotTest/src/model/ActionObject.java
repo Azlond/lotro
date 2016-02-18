@@ -29,6 +29,7 @@ public abstract class ActionObject {
 	protected ActionObject(Action action){
 	}
 	
+	public abstract ActionObject getCopy();
 	public abstract void perform() throws InterruptedException;
 	public abstract String getActionString();
 	
