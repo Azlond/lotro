@@ -158,22 +158,23 @@ public class StartController implements Initializable {
 	@FXML
 	private void runForever(ActionEvent event) {
 		new Thread(() -> {
-			this.setStatusOfListRelatedButtons(false);
+			this.disableButtonsUntilNotified();
 			this.getActionList().runForever();
-			this.waitForEnable();
 		}).start();
 	}
 
 	protected void waitForEnable() {
-		try {
-			synchronized(lvActions){
-				lvActions.wait();
+		new Thread(() -> {
+			try {
+				synchronized(lvActions){
+					lvActions.wait();
+				}
+			} catch (InterruptedException e) {
+				Log.log(e);
+			} finally {
+				this.setStatusOfListRelatedButtons(true);
 			}
-		} catch (InterruptedException e) {
-			Log.log(e);
-		} finally {
-			this.setStatusOfListRelatedButtons(true);
-		}
+		}).start();
 	}
 	
 	protected void setStatusOfListRelatedButtons(boolean enabled){
@@ -184,6 +185,11 @@ public class StartController implements Initializable {
 		btnDelete.setDisable(disable);
 		btnDuplicate.setDisable(disable);
 	}
+	
+	protected void disableButtonsUntilNotified(){
+		this.setStatusOfListRelatedButtons(false);
+		this.waitForEnable();
+	}
 
 	@FXML
 	private void stop(ActionEvent event) {
@@ -193,9 +199,8 @@ public class StartController implements Initializable {
 	@FXML
 	private void runActionQueue(ActionEvent event) {
 		new Thread(() -> {
-			this.setStatusOfListRelatedButtons(false);
+			this.disableButtonsUntilNotified();
 			this.getActionList().run();
-			this.waitForEnable();
 		}).start();
 	}
 
