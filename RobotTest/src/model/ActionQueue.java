@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +12,11 @@ import javafx.scene.control.ListView;
 import util.Log;
 import util.Util;
 
-public class ActionQueue {
+public class ActionQueue implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ObservableList<String> displayList = FXCollections.observableArrayList(new ArrayList<String>());
 	private ArrayList<ActionObject> actionList = new ArrayList<>();
 	private ListView<String> listView;
@@ -24,14 +29,6 @@ public class ActionQueue {
 		Platform.runLater(() -> {
 			listView.setItems(displayList);
 		});
-	}
-
-	/*
-	 * XXX Clearing the list - needed for loading
-	 */
-	public void clearLists() {
-		this.getDisplayList().clear();
-		this.getActionList().clear();
 	}
 
 	public void addItem(ActionObject object){
@@ -215,17 +212,17 @@ public class ActionQueue {
 	}
 
 
-	protected ObservableList<String> getDisplayList() {
+	public ObservableList<String> getDisplayList() {
 		return displayList;
 	}
 	protected void setDisplayList(ObservableList<String> displayList) {
 		this.displayList = displayList;
 	}
 
-	protected ArrayList<ActionObject> getActionList() {
+	public ArrayList<ActionObject> getActionList() {
 		return actionList;
 	}
-	protected void setActionList(ArrayList<ActionObject> actionList) {
+	public void setActionList(ArrayList<ActionObject> actionList) {
 		this.actionList = actionList;
 	}
 

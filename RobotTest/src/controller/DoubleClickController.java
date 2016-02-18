@@ -20,13 +20,6 @@ public class DoubleClickController extends ClickPaneController {
 		return new DoubleClickAction(x, y);
 	}
 	
-	/*
-	 * needed for loading XXX
-	 */
-	public ActionObject getActionObject(int x, int y) {
-		return new DoubleClickAction(x, y);
-	}
-
 	@Override
 	protected EventHandler<MouseEvent> getEventHandler() {
 		if(eventHandler == null){

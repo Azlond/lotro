@@ -1,5 +1,6 @@
 package model;
 
+@SuppressWarnings("serial")
 public class DoubleClickAction extends ClickAction {
 
 	public DoubleClickAction(double x, double y) {

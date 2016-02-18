@@ -3,6 +3,7 @@ package model;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 
+@SuppressWarnings("serial")
 public class ClickAction extends ActionObject {
 	
 	private int x, y;

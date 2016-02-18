@@ -46,22 +46,6 @@ public class KeyPaneController extends SubController {
 		return new KeyAction(this.getKeyEvent());
 	}
 	
-	/*
-	 * Keycode nur per mapping zu erhalten?
-	 * 
-	 * Bisher noch keine bessere Idee.
-	 * 
-	 * needed for loading XXX
-	 */
-	public ActionObject getActionObject(int e) {
-		System.out.println(e);
-		char a = (char) e;
-		String b = a+"";
-		KeyEvent event = new KeyEvent(KeyEvent.KEY_PRESSED, null, b, KeyCode.ENTER, false, false, false, false);
-		System.out.println(event);
-		return new KeyAction(event);
-	}
-
 	public KeyEvent getKeyEvent() {
 		return keyEvent;
 	}

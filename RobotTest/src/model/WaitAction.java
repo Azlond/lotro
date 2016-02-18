@@ -1,5 +1,6 @@
 package model;
 
+@SuppressWarnings("serial")
 public class WaitAction extends ActionObject {
 
 	private int duration;

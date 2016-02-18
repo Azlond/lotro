@@ -2,11 +2,16 @@ package model;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.io.Serializable;
 
 import util.Log;
 
 
-public abstract class ActionObject {
+public abstract class ActionObject implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	enum Action{
 		doubleclick, click, key, wait;
 	}

@@ -1,6 +1,15 @@
 package controller;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import data.Keys;
@@ -17,6 +26,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 import model.ActionObject;
 import model.ActionQueue;
 import util.Log;
@@ -66,94 +76,63 @@ public class StartController implements Initializable {
 
 	@FXML
 	void saveToFile(ActionEvent event) {
-		/*
-		String content = "";
-
-		for (String s : this.getActionList().getDisplayList()) { // saving the actions in clear text
-			content = content.concat(s).concat("\r\n");
-		}
 
 		FileChooser saveFile = new FileChooser();
-		FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+		FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("Serialization files (*.ser)", "*.ser");
 		saveFile.getExtensionFilters().add(txtFilter);
 		File file = saveFile.showSaveDialog(null);
 		if (file != null) {
 			try {
-				FileWriter fileWriter = new FileWriter(file);
-				fileWriter.write(content);
-				fileWriter.close();
+
+				FileOutputStream fileOut = new FileOutputStream(file);
+				ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+				out.writeObject(actionList.getActionList());
+				out.close();
+				fileOut.close();
+
 			} catch (IOException ex) {
 				Log.log(ex);
 			}
 		}
 
-		 */
 	}
 
 	/**
 	 * loading the saved configuration
 	 * 
-	 * converting from char to int doesn't return the correct value yet - keyEvents TODO
-	 * 
 	 * @param event
 	 */
 
+	@SuppressWarnings("unchecked")
 	@FXML
 	void loadFromFile(ActionEvent event) {
-		/*
+
 		FileChooser openFile = new FileChooser();
-		FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+		FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("Serialization files (*.ser)", "*.ser");
 		openFile.getExtensionFilters().add(txtFilter);
 		File file = openFile.showOpenDialog(null);
 
 		if (file != null) {
-			this.getActionList().clearLists(); //clear lists
 			try {
-				BufferedReader reader = new BufferedReader(new FileReader(file));
-				String line = null;
-				int index = 0;
-				while ((line = reader.readLine()) != null) { //read until file is done
-
-					if (line.contains("press key")) {
-						char c = line.substring(11, 12).charAt(0);
-						int i = Character.getNumericValue(c);
-						this.getActionList().addItem(getKeyController().getActionObject(i), index);
-						System.out.println(c);
-
-					} else if (line.contains("click at")) {
-						String s = "";
-						if (line.contains("doubleclick")) {
-							s = line.substring(16);
-						} else {
-							s = line.substring(10);
-						}
-
-						s = s.replace(")", "");
-						s = s.replace("|", ":"); // split won't work "|", needs to be investigated FIXME
-						String[] sa = s.split(":");
-
-						if (line.contains("doubleclick")) {
-							this.getActionList().addItem(getDoubleClickController().getActionObject(Integer.parseInt(sa[0]), Integer.parseInt(sa[1])), index);
-						} else {
-							this.getActionList().addItem(getClickController().getActionObject(Integer.parseInt(sa[0]), Integer.parseInt(sa[1])), index);
-						}
-					} else if (line.contains("wait")) {
-						String s = line.replaceAll("\\D+", ""); // remove all non numeric characters
-						this.getActionList().addItem(getWaitController().getActionObject(Integer.parseInt(s)), index);
-					}
-					index++;
+				FileInputStream fileIn = new FileInputStream(file);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				ArrayList<ActionObject> loadedActionList = (ArrayList<ActionObject>) in.readObject();
+				in.close();
+				fileIn.close();
+				this.getActionList().setActionList(loadedActionList);
+				
+				actionList.getDisplayList().clear();
+				
+				for (ActionObject action : this.getActionList().getActionList()) {
+					actionList.getDisplayList().add(action.getActionString());
 				}
-				reader.close();
-			} catch (FileNotFoundException ex) {
-				Log.log(ex);
-			} catch (IOException e) {
+			} catch (ClassNotFoundException | IOException e) {
 				Log.log(e);
 			}
 
 		}
-		 */
 	}
-
 
 	@FXML
 	private void runForever(ActionEvent event) {
@@ -166,7 +145,7 @@ public class StartController implements Initializable {
 	protected void waitForEnable() {
 		new Thread(() -> {
 			try {
-				synchronized(lvActions){
+				synchronized (lvActions) {
 					lvActions.wait();
 				}
 			} catch (InterruptedException e) {
@@ -177,7 +156,7 @@ public class StartController implements Initializable {
 		}).start();
 	}
 
-	protected void setStatusOfListRelatedButtons(boolean enabled){
+	protected void setStatusOfListRelatedButtons(boolean enabled) {
 		boolean disable = !enabled;
 		btnAdd.setDisable(disable);
 		btnUp.setDisable(disable);
@@ -186,7 +165,7 @@ public class StartController implements Initializable {
 		btnDuplicate.setDisable(disable);
 	}
 
-	protected void disableButtonsUntilNotified(){
+	protected void disableButtonsUntilNotified() {
 		this.setStatusOfListRelatedButtons(false);
 		this.waitForEnable();
 	}
@@ -206,28 +185,28 @@ public class StartController implements Initializable {
 
 	@FXML
 	private void moveUp(ActionEvent event) {
-		synchronized(lvActions){
+		synchronized (lvActions) {
 			this.getActionList().moveItems(1);
 		}
 	}
 
 	@FXML
 	private void moveDown(ActionEvent event) {
-		synchronized(lvActions){
+		synchronized (lvActions) {
 			this.getActionList().moveItems(-1);
 		}
 	}
 
 	@FXML
 	private void deleteSelected(ActionEvent event) {
-		synchronized(lvActions){
+		synchronized (lvActions) {
 			this.getActionList().removeSelectedItems();
 		}
 	}
 
 	@FXML
 	private void duplicateSelected(ActionEvent event) {
-		synchronized(lvActions){
+		synchronized (lvActions) {
 			this.getActionList().duplicateSelectedItems();
 		}
 	}

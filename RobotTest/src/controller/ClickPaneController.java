@@ -37,13 +37,6 @@ public class ClickPaneController extends SubController{
 		return new ClickAction(x, y);
 	}
 	
-	/*
-	 * needed for loading XXX
-	 */
-	public ActionObject getActionObject(int x, int y) {
-		return new ClickAction(x,y);
-	}
-	
 	@Override
 	public void addEventFilters(Stage stage) {
 		stage.addEventFilter(MouseEvent.MOUSE_DRAGGED, this.getEventHandler());

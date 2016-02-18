@@ -4,6 +4,7 @@ import java.awt.Robot;
 
 import javafx.scene.input.KeyEvent;
 
+@SuppressWarnings("serial")
 public class KeyAction extends ActionObject{
 
 	private int keyCode;
