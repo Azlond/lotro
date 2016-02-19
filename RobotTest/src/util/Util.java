@@ -32,7 +32,7 @@ public class Util {
 		}
 		return false;
 	}
-	
+
 	public static String readFile(File f){
 		String result = "";
 		try(BufferedReader reader = new BufferedReader(new FileReader(f))){
@@ -44,14 +44,14 @@ public class Util {
 					line = "\r\n" + line;
 				}
 			}
-			Log.log("read File " + f.getName(), Log.Level.DEBUG); 
+			Log.log("read File " + f.getName(), Log.Level.DEBUG);
 		} catch(Exception e){
 			Log.log("Exception while reading file " + f.getAbsolutePath(), Log.Level.ERROR);
 			Log.log(e);
 		}
 		return result;
 	}
-	
+
 	/**
 	 * überschreibt ggf. die vorher vorhandene Datei
 	 * @param f
@@ -66,7 +66,7 @@ public class Util {
 			Log.log(e);
 		}
 	}
-	
+
 	/**
 	 * überschreibt ggf. die vorher vorhandene Datei
 	 * @param f
@@ -80,7 +80,7 @@ public class Util {
 			Log.log(e);
 		}
 	}
-	
+
 	public static String[] getKundenListe(){
 		return new String[]{
 				"Ansbach",
@@ -126,7 +126,7 @@ public class Util {
 				"XmlServiceTest"
 		};
 	}
-	
+
 	public static String[] getModifiedKundenListe(String append){
 		String[] list = getKundenListe();
 		for(int i = 0; i < list.length; i++){
@@ -134,7 +134,7 @@ public class Util {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * gibt das Projektverzeichnis zurück (ohne {@code \} am Ende)
 	 * @param file
@@ -148,7 +148,7 @@ public class Util {
 		String result = path.substring(0, projectEnd + workspaceEnd);
 		return result;
 	}
-	
+
 	/**
 	 * gibt nur den Projektnamen zurück (com.athos.wastemanagement.<kunde>)
 	 * @param file
@@ -159,7 +159,7 @@ public class Util {
 		String result = projectPath.substring(projectPath.lastIndexOf("\\") + 1);
 		return result;
 	}
-	
+
 	public static Document parseXML(File file){
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -171,7 +171,7 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	public static String extractTomcatVersion(String pathValue){
 		if(!pathValue.contains("Tomcat")){
 			return "";
@@ -180,7 +180,7 @@ public class Util {
 		String version = tomcatString.substring(tomcatString.lastIndexOf('v') + 1, tomcatString.lastIndexOf('v') + 2);
 		return version;
 	}
-	
+
 	public static String getHostFromFileText(String fileText){
 		String textStartingWithLink = fileText.substring(fileText.indexOf("<A HREF") + "<A HREF".length());
 		String host = null;
@@ -195,7 +195,7 @@ public class Util {
 		}
 		return host;
 	}
-	
+
 	public static String replacePlaceholders(String newPath, File file){
 		newPath = newPath.replace("/", "\\");
 		String project = "";
@@ -209,7 +209,7 @@ public class Util {
 			} else{
 				parentLevel = Integer.parseInt(parentPlaceholder.substring("<parent".length(), parentPlaceholder.lastIndexOf(">")));
 			}
-			
+
 			File newParent = file;
 			for(int i = 0; i < parentLevel; i++){
 				if(newParent.getParentFile() == null){
@@ -229,7 +229,7 @@ public class Util {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 
 	 * @param list
@@ -245,7 +245,7 @@ public class Util {
 		}
 		return false;
 	}
-	
+
 	public static boolean containsContainsRegexMatch(ArrayList<String> list, String realFile){
 		for(String element : list){
 			Pattern pattern = Pattern.compile(element);
@@ -256,7 +256,7 @@ public class Util {
 		}
 		return false;
 	}
-	
+
 	public static ArrayList<String> splitFilenames(String text){
 		ArrayList<String> result = new ArrayList<>();
 		if((text.length() - text.replace("\"", "").length()) % 2 == 1){
@@ -277,7 +277,7 @@ public class Util {
 		}
 		return result;
 	}
-	
+
 	public static String ArrayListToString(ArrayList<String> list){
 		String result = "[";
 		for(String s : list){
@@ -286,7 +286,7 @@ public class Util {
 		result = result.substring(0, result.length() - 2) + "]";
 		return result;
 	}
-	
+
 	public static ArrayList<String> toLowerCase(ArrayList<String> list){
 		ArrayList<String> result = new ArrayList<>();
 		for(String s : list){
@@ -294,7 +294,7 @@ public class Util {
 		}
 		return result;
 	}
-	
+
 	public static boolean fileContains(File file, String target, boolean regex){
 		if(!file.exists() || target == null){
 			return false;
@@ -308,7 +308,7 @@ public class Util {
 			return fileText.contains(target);
 		}
 	}
-	
+
 	public static boolean fileStartsWith(File file, String target, boolean regex){
 		if(!file.exists() || target == null){
 			return false;
@@ -322,7 +322,7 @@ public class Util {
 			return fileText.startsWith(target);
 		}
 	}
-	
+
 	public static boolean fileEndsWith(File file, String target, boolean regex){
 		if(!file.exists() || target == null){
 			return false;
@@ -336,11 +336,11 @@ public class Util {
 			return fileText.endsWith(target);
 		}
 	}
-	
+
 	public static boolean isNullOrEmpty(String s){
 		return s == null || s.isEmpty();
 	}
-	
+
 	public static boolean containsEqualNames(ArrayList<File> files){
 		for(File master : files){
 			for(File slave : files){
@@ -351,16 +351,22 @@ public class Util {
 		}
 		return false;
 	}
-	
+
 	public static String getStackTraceAsString(Exception e){
 		StringWriter stringwriter = new StringWriter();
 		PrintWriter printwriter = new PrintWriter(stringwriter);
 		e.printStackTrace(printwriter);
 		return stringwriter.toString();
 	}
-	
+
 	public static int[] toIntArray(List<Integer> list){
 		int[] result = list.stream().mapToInt(i -> i).toArray();
 		return result;
+	}
+
+	public static Thread getDaemon(Runnable runnable){
+		Thread thread = new Thread(runnable);
+		thread.setDaemon(true);
+		return thread;
 	}
 }

@@ -1,10 +1,8 @@
 package controller;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,17 +17,21 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import model.ActionObject;
 import model.ActionQueue;
 import util.Log;
+import util.Util;
 
 public class StartController implements Initializable {
 
@@ -45,13 +47,15 @@ public class StartController implements Initializable {
 	private AnchorPane paneParameter;
 	@FXML
 	private TextField tfTimes;
+	@FXML
+	private Label lbDiscardChanges, lbSaveChanges;
 
 	private KeyPaneController keyController;
 	private WaitPaneController waitController;
 	private ClickPaneController clickController;
 	private DoubleClickController doubleClickController;
 
-	private ActionQueue actionList;
+	private ActionQueue actionQueue;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -60,7 +64,7 @@ public class StartController implements Initializable {
 			comboAction.itemsProperty().set(FXCollections.observableArrayList(Keys.getActions()));
 			comboAction.getSelectionModel().selectedItemProperty().addListener(ListenerFactory.getComboActionsListener(paneParameter, this));
 			comboAction.setValue(Keys.getActions().get(0));
-			this.setActionList(new ActionQueue(lvActions));
+			this.setActionQueue(new ActionQueue(lvActions));
 			lvActions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		});
 	}
@@ -68,12 +72,8 @@ public class StartController implements Initializable {
 	/**
 	 * saving a chosen configuration
 	 * 
-	 * maybe making ActionQueue Serializable and serializing/unserializing it is easier?
-	 * also solves the KeyEvent problem. makes creating "saves" by editing a textfile impossible though
-	 * 
 	 * @param event
 	 */
-
 	@FXML
 	void saveToFile(ActionEvent event) {
 
@@ -87,7 +87,7 @@ public class StartController implements Initializable {
 				FileOutputStream fileOut = new FileOutputStream(file);
 				ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
-				out.writeObject(actionList.getActionList());
+				out.writeObject(this.getActionQueue().getActionList());
 				out.close();
 				fileOut.close();
 
@@ -103,7 +103,6 @@ public class StartController implements Initializable {
 	 * 
 	 * @param event
 	 */
-
 	@SuppressWarnings("unchecked")
 	@FXML
 	void loadFromFile(ActionEvent event) {
@@ -120,12 +119,12 @@ public class StartController implements Initializable {
 				ArrayList<ActionObject> loadedActionList = (ArrayList<ActionObject>) in.readObject();
 				in.close();
 				fileIn.close();
-				this.getActionList().setActionList(loadedActionList);
-				
-				actionList.getDisplayList().clear();
-				
-				for (ActionObject action : this.getActionList().getActionList()) {
-					actionList.getDisplayList().add(action.getActionString());
+				this.getActionQueue().setActionList(loadedActionList);
+
+				this.getActionQueue().getDisplayList().clear();
+
+				for (ActionObject action : this.getActionQueue().getActionList()) {
+					this.getActionQueue().getDisplayList().add(action.getActionString());
 				}
 			} catch (ClassNotFoundException | IOException e) {
 				Log.log(e);
@@ -136,78 +135,54 @@ public class StartController implements Initializable {
 
 	@FXML
 	private void runForever(ActionEvent event) {
-		new Thread(() -> {
-			this.disableButtonsUntilNotified();
-			this.getActionList().runForever();
+		Util.getDaemon(() -> {
+			this.disableListButtons();
+			this.getActionQueue().runForever();
 		}).start();
 	}
 
-	protected void waitForEnable() {
-		new Thread(() -> {
-			try {
-				synchronized (lvActions) {
-					lvActions.wait();
-				}
-			} catch (InterruptedException e) {
-				Log.log(e);
-			} finally {
-				this.setStatusOfListRelatedButtons(true);
-			}
-		}).start();
-	}
-
-	protected void setStatusOfListRelatedButtons(boolean enabled) {
-		boolean disable = !enabled;
-		btnAdd.setDisable(disable);
-		btnUp.setDisable(disable);
-		btnDown.setDisable(disable);
-		btnDelete.setDisable(disable);
-		btnDuplicate.setDisable(disable);
-	}
-
-	protected void disableButtonsUntilNotified() {
-		this.setStatusOfListRelatedButtons(false);
-		this.waitForEnable();
+	protected void disableListButtons() {
+		this.lock(lvActions, true, btnAdd, btnUp, btnDown, btnDelete, btnDuplicate, btnEdit);
 	}
 
 	@FXML
 	private void stop(ActionEvent event) {
-		this.getActionList().stop();
+		this.getActionQueue().stop();
 	}
 
 	@FXML
 	private void runActionQueue(ActionEvent event) {
-		new Thread(() -> {
-			this.disableButtonsUntilNotified();
-			this.getActionList().run();
+		Util.getDaemon(() -> {
+			this.disableListButtons();
+			this.getActionQueue().run();
 		}).start();
 	}
 
 	@FXML
 	private void moveUp(ActionEvent event) {
 		synchronized (lvActions) {
-			this.getActionList().moveItems(1);
+			this.getActionQueue().moveItems(1);
 		}
 	}
 
 	@FXML
 	private void moveDown(ActionEvent event) {
 		synchronized (lvActions) {
-			this.getActionList().moveItems(-1);
+			this.getActionQueue().moveItems(-1);
 		}
 	}
 
 	@FXML
 	private void deleteSelected(ActionEvent event) {
 		synchronized (lvActions) {
-			this.getActionList().removeSelectedItems();
+			this.getActionQueue().removeSelectedItems();
 		}
 	}
 
 	@FXML
 	private void duplicateSelected(ActionEvent event) {
 		synchronized (lvActions) {
-			this.getActionList().duplicateSelectedItems();
+			this.getActionQueue().duplicateSelectedItems();
 		}
 	}
 
@@ -215,13 +190,40 @@ public class StartController implements Initializable {
 	private void addSequenceElement(ActionEvent event) {
 		synchronized (lvActions) {
 			ActionObject newAction = this.getSubController().getActionObject();
-			this.getActionList().addItem(newAction);
+			this.getActionQueue().addItem(newAction);
 		}
 	}
 
 	@FXML
 	private void editAction(ActionEvent event){
-		this.getActionList().edit();
+		if(this.getActionQueue().getSelectedActionType().length() > 0){ //ist genau ein Item ausgewählt?
+			this.disableListButtons();
+			this.lockAction();
+			this.lock(lvActions, true, lvActions);
+			this.disableRunControl();
+
+			lbDiscardChanges.setVisible(true);
+			lbSaveChanges.setVisible(true);
+		}
+	}
+
+	@FXML
+	private void discardChanges(MouseEvent event){ //nothing happens, but all the locks are being lifted
+		lbDiscardChanges.setVisible(false);
+		lbSaveChanges.setVisible(false);
+		Util.getDaemon(() -> {
+			synchronized(comboAction){
+				comboAction.notifyAll();
+			}
+			synchronized(lvActions){
+				lvActions.notifyAll();
+			}
+		}).start();
+	}
+
+	@FXML
+	private void saveChanges(MouseEvent event){
+
 	}
 
 	public KeyPaneController getKeyController() {
@@ -279,16 +281,60 @@ public class StartController implements Initializable {
 			case Keys.action_wait:
 				return this.getWaitController();
 			default:
-				Log.log("Selected Action doesn't match any pre-defined actions (StartController.getSubController())", Log.Level.FATAL);
+				Log.log("Selected action doesn't match any pre-defined actions (StartController.getSubController())", Log.Level.FATAL);
 				return null;
 		}
 	}
 
-	protected ActionQueue getActionList() {
-		return actionList;
+	protected ActionQueue getActionQueue() {
+		return actionQueue;
 	}
 
-	protected void setActionList(ActionQueue actionList) {
-		this.actionList = actionList;
+	protected void setActionQueue(ActionQueue actionList) {
+		this.actionQueue = actionList;
+	}
+
+	/**
+	 * switches the value of the action combobox to the one of the currently selected item in the listView<br/>
+	 * if none or multiple items are selected, nothing happens<br/>
+	 * the combobox remains disabled until comboAction.notify is called
+	 */
+	protected void lockAction(){
+		String item = this.getActionQueue().getSelectedActionType();
+		if(item.length() == 0){
+			return;
+		}
+		comboAction.getSelectionModel().select(item);
+		this.lock(comboAction, true, comboAction);
+	}
+
+	protected void disableRunControl(){
+		this.lock(lvActions, true, btnRun, btnRunForever, btnStop, tfTimes);
+	}
+
+	/**
+	 * @param lock the object which acts as a lock. nodes will remain disabled/enabled, until lock.notify() is called
+	 * @param disabledForDuration
+	 * @param nodes Nodes to be enabled/disabled
+	 */
+	protected void lock(Object lock, boolean disabledForDuration, Node...nodes){
+		for(Node node : nodes){
+			node.setDisable(disabledForDuration);
+		}
+		Util.getDaemon(() ->{
+			try {
+				synchronized(lock){
+					lock.wait();
+				}
+			} catch (Exception e) {
+				Log.log(e);
+			} finally{
+				Platform.runLater(() -> { //only FX Thread may modify GUI elements
+					for(Node node : nodes){
+						node.setDisable(!disabledForDuration);
+					}
+				});
+			}
+		}).start();
 	}
 }

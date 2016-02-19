@@ -97,7 +97,7 @@ public class ActionQueue implements Serializable{
 	 * @param indices sorted Array of indices
 	 * @return
 	 */
-	public int[] shiftItems(int[] indices, int direction){
+	protected int[] shiftItems(int[] indices, int direction){
 		ObservableList<String> listCopy = FXCollections.observableArrayList(this.getDisplayList());
 		ArrayList<ActionObject> objectList = this.getActionList();
 		for(int index : indices){
@@ -120,7 +120,7 @@ public class ActionQueue implements Serializable{
 		return indices;
 	}
 
-	public int[] checkBoundariesAndMove(int[] indices, int direction){
+	protected int[] checkBoundariesAndMove(int[] indices, int direction){
 		Arrays.sort(indices);
 		if(direction == -1){
 
@@ -233,31 +233,40 @@ public class ActionQueue implements Serializable{
 		this.listView = listView;
 	}
 
-	public void startRunThread(){
+	protected void startRunThread(){
 		if(!this.getRunThread().isAlive()){
 			this.setRunThread(new ActionThread());
 			this.getRunThread().start();
 		}
 	}
-	public Thread getRunThread() {
+	protected Thread getRunThread() {
 		return runThread;
 	}
-	public void setRunThread(Thread runThread) {
+	protected void setRunThread(Thread runThread) {
 		runThread.setDaemon(true);
 		this.runThread = runThread;
 	}
 
-	public void startRunForeverThread(){
+	protected void startRunForeverThread(){
 		this.setRunForeverThread(new ActionLoopThread());
 		this.getRunForeverThread().start();
 		Log.log("new runForeverThread started", Log.Level.DEBUG);
 	}
-	public Thread getRunForeverThread() {
+	protected Thread getRunForeverThread() {
 		return runForeverThread;
 	}
-	public void setRunForeverThread(Thread runForeverThread) {
+	protected void setRunForeverThread(Thread runForeverThread) {
 		runForeverThread.setDaemon(true);
 		this.runForeverThread = runForeverThread;
+	}
+
+	public String getSelectedActionType(){
+		ObservableList<Integer> list = this.getListView().getSelectionModel().getSelectedIndices();
+		if(list.size() == 0 || list.size() > 1){
+			return "";
+		} else{
+			return this.getActionList().get(list.get(0)).getActionAsString();
+		}
 	}
 
 	private class ActionThread extends Thread{

@@ -2,3 +2,15 @@
 	-fx-font-weight: bold;
 	-fx-font-size: 20;
 }
+
+.lbDiscard{
+	-fx-font-weight: bold;
+	-fx-font-size: 14;
+	-fx-background-color: #DF0000;
+}
+
+.lbSave{
+	-fx-font-weight: bold;
+	-fx-font-size: 14;
+	-fx-background-color: #00AF00;
+}
