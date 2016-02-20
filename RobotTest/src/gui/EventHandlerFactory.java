@@ -1,12 +1,11 @@
 package gui;
 
-import controller.KeyPaneController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
+import controller.KeyPaneController;
 
 public class EventHandlerFactory {
 	private static EventHandlerFactory factory = new EventHandlerFactory();
@@ -25,6 +24,7 @@ public class EventHandlerFactory {
 	}
 	
 	private EventHandler<KeyEvent> keyEventHandler;
+	@SuppressWarnings("deprecation")
 	public EventHandler<KeyEvent> getKeyEventHandler(TextField tfKey, Label lbKey, KeyPaneController controller){
 		if(keyEventHandler == null){
 			keyEventHandler = (event) -> {
@@ -39,13 +39,15 @@ public class EventHandlerFactory {
 
 	private EventHandler<MouseEvent> mouseDragEventHandler;
 	public EventHandler<MouseEvent> getMouseDragEventHandler(TextField tfX, TextField tfY){
-				if(mouseDragEventHandler == null){
-					mouseDragEventHandler = (event) -> {
-						tfX.setText("" + event.getScreenX());
-						tfY.setText("" + event.getScreenY());
-					};
+		if(mouseDragEventHandler == null){
+			mouseDragEventHandler = (event) -> {
+				if(event.getButton() == MouseButton.PRIMARY){
+					tfX.setText("" + event.getScreenX());
+					tfY.setText("" + event.getScreenY());
 				}
-				return mouseDragEventHandler;
+			};
+		}
+		return mouseDragEventHandler;
 	}
 
 	

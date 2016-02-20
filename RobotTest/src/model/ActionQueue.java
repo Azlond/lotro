@@ -1,9 +1,7 @@
 package model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -267,6 +265,25 @@ public class ActionQueue implements Serializable{
 		} else{
 			return this.getActionList().get(list.get(0)).getActionAsString();
 		}
+	}
+	
+	public void replaceSelectedAction(ActionObject object){
+		List<Integer> indices = this.getSelectedIndices();
+		if(indices.size() == 1){
+			int index = indices.get(0);
+			this.getActionList().remove(index);
+			this.getActionList().add(index, object);
+			List<String> displayCopy = new ArrayList<String>(this.getDisplayList());
+			displayCopy.remove(index);
+			displayCopy.add(index, object.getActionString());
+			this.setDisplayList(FXCollections.observableArrayList(displayCopy));
+			this.getListView().setItems(FXCollections.observableArrayList(displayCopy));
+		}
+	}
+	
+	private List<Integer> getSelectedIndices(){
+		ObservableList<Integer> list = this.getListView().getSelectionModel().getSelectedIndices();
+		return new ArrayList<Integer>(list);
 	}
 
 	private class ActionThread extends Thread{

@@ -1,29 +1,20 @@
 package controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import gui.ListenerFactory;
+
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import data.Keys;
-import gui.ListenerFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -32,6 +23,7 @@ import model.ActionObject;
 import model.ActionQueue;
 import util.Log;
 import util.Util;
+import data.Keys;
 
 public class StartController implements Initializable {
 
@@ -129,7 +121,6 @@ public class StartController implements Initializable {
 			} catch (ClassNotFoundException | IOException e) {
 				Log.log(e);
 			}
-
 		}
 	}
 
@@ -208,7 +199,10 @@ public class StartController implements Initializable {
 	}
 
 	@FXML
-	private void discardChanges(MouseEvent event){ //nothing happens, but all the locks are being lifted
+	private void discardChanges(MouseEvent event){ //nothing happens, but all the locks are being lifted´
+		if(event.getButton() != MouseButton.SECONDARY){
+			return;
+		}
 		lbDiscardChanges.setVisible(false);
 		lbSaveChanges.setVisible(false);
 		Util.getDaemon(() -> {
@@ -223,7 +217,14 @@ public class StartController implements Initializable {
 
 	@FXML
 	private void saveChanges(MouseEvent event){
-
+		if(event.getButton() != MouseButton.SECONDARY){
+			return;
+		}
+		synchronized(lvActions){
+			ActionObject editedAction = this.getSubController().getActionObject();
+			this.getActionQueue().replaceSelectedAction(editedAction);
+		}
+		this.discardChanges(event); //does nothing but enabling everything again
 	}
 
 	public KeyPaneController getKeyController() {

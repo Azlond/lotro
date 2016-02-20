@@ -4,8 +4,8 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.Serializable;
 
-import data.Keys;
 import util.Log;
+import data.Keys;
 
 
 public abstract class ActionObject implements Serializable {
@@ -38,6 +38,9 @@ public abstract class ActionObject implements Serializable {
 
 	public abstract ActionObject getCopy();
 	public abstract void perform() throws InterruptedException;
+	/**
+	 * @return a description like "click at (0|0)"
+	 */
 	public abstract String getActionString();
 
 	public void sleep(int ms) throws InterruptedException{

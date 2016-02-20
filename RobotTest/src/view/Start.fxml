@@ -74,6 +74,8 @@
                                           <GridPane hgap="10.0" prefWidth="380.0" vgap="10.0" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -88,8 +90,8 @@
                                                 </HBox>
                                                 <HBox spacing="10.0" GridPane.columnSpan="3">
                                                    <children>
-                                                      <Label fx:id="lbDiscardChanges" alignment="CENTER" onMouseEntered="#discardChanges" prefHeight="30.0" prefWidth="185.0" styleClass="lbDiscard" text="discard changes" GridPane.columnSpan="3" visible="false"/>
-                                                      <Label fx:id="lbSaveChanges" alignment="CENTER" onMouseEntered="#saveChanges" prefHeight="30.0" prefWidth="185.0" styleClass="lbSave" text="save changes" visible="false"/>
+                                                      <Label fx:id="lbDiscardChanges" alignment="CENTER" onMouseClicked="#discardChanges" prefHeight="30.0" prefWidth="185.0" styleClass="lbDiscard" text="discard changes" visible="false" GridPane.columnSpan="3" />
+                                                      <Label fx:id="lbSaveChanges" alignment="CENTER" onMouseClicked="#saveChanges" prefHeight="30.0" prefWidth="185.0" styleClass="lbSave" text="save changes" visible="false" />
                                                    </children>
                                                 </HBox>
                                              </children>

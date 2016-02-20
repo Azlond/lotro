@@ -10,6 +10,7 @@ public class KeyAction extends ActionObject{
 	private int keyCode;
 	private String keyName;
 
+	@SuppressWarnings("deprecation")
 	public KeyAction(KeyEvent event) {
 		super(Action.key);
 		this.setKeyName(event.getCode().getName());
