@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import model.ActionObject;
 import model.ClickAction;
 
-public class ClickPaneController extends SubController{
+public class ClickController extends SubController{
 	@FXML
 	protected TextField tfClickX, tfClickY;
 

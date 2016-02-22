@@ -6,9 +6,9 @@ import util.Log;
 public final class ControllerFactoryFactory {
 
 	private static final DoubleClickController doubleClickController = new DoubleClickController();
-	private static final ClickPaneController clickController = new ClickPaneController();
-	private static final KeyPaneController keyController = new KeyPaneController();
-	private static final WaitPaneController waitController = new WaitPaneController();
+	private static final ClickController clickController = new ClickController();
+	private static final KeyController keyController = new KeyController();
+	private static final WaitController waitController = new WaitController();
 	private static final LoopStartController loopStartController = new LoopStartController();
 	private static final LoopEndController loopEndController = new LoopEndController();
 
@@ -17,13 +17,13 @@ public final class ControllerFactoryFactory {
 			if(param == DoubleClickController.class){
 				return doubleClickController;
 			}
-			if(param == ClickPaneController.class){
+			if(param == ClickController.class){
 				return clickController;
 			}
-			if(param == KeyPaneController.class){
+			if(param == KeyController.class){
 				return keyController;
 			}
-			if(param == WaitPaneController.class){
+			if(param == WaitController.class){
 				return waitController;
 			}
 			if(param == LoopStartController.class){

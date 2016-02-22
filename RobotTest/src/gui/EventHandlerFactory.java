@@ -5,7 +5,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
-import controller.KeyPaneController;
+import controller.KeyController;
 
 public class EventHandlerFactory {
 	private static EventHandlerFactory factory = new EventHandlerFactory();
@@ -25,7 +25,7 @@ public class EventHandlerFactory {
 	
 	private EventHandler<KeyEvent> keyEventHandler;
 	@SuppressWarnings("deprecation")
-	public EventHandler<KeyEvent> getKeyEventHandler(TextField tfKey, Label lbKey, KeyPaneController controller){
+	public EventHandler<KeyEvent> getKeyEventHandler(TextField tfKey, Label lbKey, KeyController controller){
 		if(keyEventHandler == null){
 			keyEventHandler = (event) -> {
 				tfKey.setText("" + event.getCode().impl_getCode());

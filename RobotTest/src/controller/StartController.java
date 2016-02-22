@@ -52,9 +52,9 @@ public class StartController implements Initializable {
 	@FXML
 	private Label lbDiscardChanges, lbSaveChanges;
 
-	private KeyPaneController keyController;
-	private WaitPaneController waitController;
-	private ClickPaneController clickController;
+	private KeyController keyController;
+	private WaitController waitController;
+	private ClickController clickController;
 	private DoubleClickController doubleClickController;
 	private LoopStartController loopStartController;
 	private LoopEndController loopEndController;
@@ -239,24 +239,24 @@ public class StartController implements Initializable {
 		this.discardChanges(event); //does nothing but enabling everything again
 	}
 
-	public KeyPaneController getKeyController() {
+	public KeyController getKeyController() {
 		return keyController;
 	}
-	public void setKeyController(KeyPaneController keyController) {
+	public void setKeyController(KeyController keyController) {
 		this.keyController = keyController;
 	}
 
-	public WaitPaneController getWaitController() {
+	public WaitController getWaitController() {
 		return waitController;
 	}
-	public void setWaitController(WaitPaneController waitController) {
+	public void setWaitController(WaitController waitController) {
 		this.waitController = waitController;
 	}
 
-	public ClickPaneController getClickController() {
+	public ClickController getClickController() {
 		return clickController;
 	}
-	public void setClickController(ClickPaneController clickController) {
+	public void setClickController(ClickController clickController) {
 		this.clickController = clickController;
 	}
 

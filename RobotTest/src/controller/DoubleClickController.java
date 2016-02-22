@@ -7,7 +7,7 @@ import javafx.scene.input.MouseEvent;
 import model.ActionObject;
 import model.DoubleClickAction;
 
-public class DoubleClickController extends ClickPaneController {
+public class DoubleClickController extends ClickController {
 	@Override
 	public String getAction() {
 		return Keys.action_doubleClick;

@@ -15,7 +15,7 @@ import model.ActionObject;
 import model.KeyAction;
 import util.Log;
 
-public class KeyPaneController extends SubController {
+public class KeyController extends SubController {
 	@FXML
 	private TextField tfKey, tfPressDuration;
 	@FXML

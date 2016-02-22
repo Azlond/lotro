@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import model.ActionObject;
 import model.WaitAction;
 
-public class WaitPaneController extends SubController{
+public class WaitController extends SubController{
 	@FXML
 	private TextField tfDuration;
 	@FXML
