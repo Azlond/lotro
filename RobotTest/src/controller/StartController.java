@@ -1,29 +1,39 @@
 package controller;
 
-import gui.ListenerFactory;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import data.Keys;
+import gui.ListenerFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import model.ActionObject;
 import model.ActionQueue;
 import util.Log;
 import util.Util;
-import data.Keys;
 
 public class StartController implements Initializable {
 
@@ -46,6 +56,8 @@ public class StartController implements Initializable {
 	private WaitPaneController waitController;
 	private ClickPaneController clickController;
 	private DoubleClickController doubleClickController;
+	private LoopStartController loopStartController;
+	private LoopEndController loopEndController;
 
 	private ActionQueue actionQueue;
 
@@ -230,7 +242,6 @@ public class StartController implements Initializable {
 	public KeyPaneController getKeyController() {
 		return keyController;
 	}
-
 	public void setKeyController(KeyPaneController keyController) {
 		this.keyController = keyController;
 	}
@@ -238,7 +249,6 @@ public class StartController implements Initializable {
 	public WaitPaneController getWaitController() {
 		return waitController;
 	}
-
 	public void setWaitController(WaitPaneController waitController) {
 		this.waitController = waitController;
 	}
@@ -246,7 +256,6 @@ public class StartController implements Initializable {
 	public ClickPaneController getClickController() {
 		return clickController;
 	}
-
 	public void setClickController(ClickPaneController clickController) {
 		this.clickController = clickController;
 	}
@@ -254,9 +263,22 @@ public class StartController implements Initializable {
 	public DoubleClickController getDoubleClickController() {
 		return doubleClickController;
 	}
-
 	public void setDoubleClickController(DoubleClickController doubleClickController) {
 		this.doubleClickController = doubleClickController;
+	}
+
+	public LoopStartController getLoopStartController() {
+		return loopStartController;
+	}
+	public void setLoopStartController(LoopStartController loopStartController) {
+		this.loopStartController = loopStartController;
+	}
+
+	public LoopEndController getLoopEndController() {
+		return loopEndController;
+	}
+	public void setLoopEndController(LoopEndController loopEndController) {
+		this.loopEndController = loopEndController;
 	}
 
 	/**
@@ -281,6 +303,10 @@ public class StartController implements Initializable {
 				return this.getKeyController();
 			case Keys.action_wait:
 				return this.getWaitController();
+			case Keys.action_loopStart:
+				return this.getLoopStartController();
+			case Keys.action_loopEnd:
+				return this.getLoopEndController();
 			default:
 				Log.log("Selected action doesn't match any pre-defined actions (StartController.getSubController())", Log.Level.FATAL);
 				return null;
@@ -306,7 +332,13 @@ public class StartController implements Initializable {
 			return;
 		}
 		comboAction.getSelectionModel().select(item);
+		this.getSubController().removeEventFilters(this.getStage());
+		this.getSubController().addEditEventFilters(this.getStage());
 		this.lock(comboAction, true, comboAction);
+		this.lockExecution(comboAction, () -> {
+			this.getSubController().removeEditEventFilters(this.getStage());
+			this.getSubController().addEventFilters(this.getStage());
+		});
 	}
 
 	protected void disableRunControl(){
@@ -334,6 +366,26 @@ public class StartController implements Initializable {
 					for(Node node : nodes){
 						node.setDisable(!disabledForDuration);
 					}
+				});
+			}
+		}).start();
+	}
+
+	protected Stage getStage(){
+		return (Stage)btnAdd.getScene().getWindow();
+	}
+
+	protected void lockExecution(Object lock, Runnable execution){
+		Util.getDaemon(() ->{
+			try {
+				synchronized(lock){
+					lock.wait();
+				}
+			} catch (Exception e) {
+				Log.log(e);
+			} finally{
+				Platform.runLater(() -> { //only FX Thread may modify GUI elements. since Runnable probably contains GUI, better be safe
+					execution.run();
 				});
 			}
 		}).start();

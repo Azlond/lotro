@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.ListView;
+
 @SuppressWarnings("serial")
 public class DoubleClickAction extends ClickAction {
 
@@ -9,9 +11,10 @@ public class DoubleClickAction extends ClickAction {
 	}
 
 	@Override
-	public void perform() throws InterruptedException{
-		super.perform();
-		super.perform();
+	public void perform(ListView<String> listView) throws InterruptedException{
+		listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
+		this.performClick();
+		this.performClick();
 	}
 
 	@Override

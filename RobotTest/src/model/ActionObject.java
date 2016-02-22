@@ -4,8 +4,9 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.Serializable;
 
-import util.Log;
 import data.Keys;
+import javafx.scene.control.ListView;
+import util.Log;
 
 
 public abstract class ActionObject implements Serializable {
@@ -14,7 +15,7 @@ public abstract class ActionObject implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	public enum Action{
-		doubleclick, click, key, wait, none; //use none only for error return values
+		doubleclick, click, key, wait, loopStart, loopEnd, none; //use none only for error return values
 	}
 
 	public static final int WAIT_BETWEEN_EVENTS = 30;
@@ -31,13 +32,23 @@ public abstract class ActionObject implements Serializable {
 	}
 
 	private Action action;
+	private int displayIndex;
 
 	protected ActionObject(Action action){
 		this.setAction(action);
 	}
 
+	/**
+	 * @return a copy of the current object
+	 */
 	public abstract ActionObject getCopy();
-	public abstract void perform() throws InterruptedException;
+
+	/**
+	 * performs the associated action
+	 * @throws InterruptedException
+	 */
+	public abstract void perform(ListView<String> listView) throws InterruptedException;
+
 	/**
 	 * @return a description like "click at (0|0)"
 	 */
@@ -59,5 +70,12 @@ public abstract class ActionObject implements Serializable {
 	}
 	public String getActionAsString(){
 		return Keys.getStringForAction(this.getAction());
+	}
+
+	public int getDisplayIndex() {
+		return displayIndex;
+	}
+	public void setDisplayIndex(int displayIndex) {
+		this.displayIndex = displayIndex;
 	}
 }

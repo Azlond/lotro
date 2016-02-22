@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.ListView;
+
 @SuppressWarnings("serial")
 public class WaitAction extends ActionObject {
 
@@ -11,7 +13,8 @@ public class WaitAction extends ActionObject {
 	}
 
 	@Override
-	public void perform() throws InterruptedException{
+	public void perform(ListView<String> listView) throws InterruptedException{
+		listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
 		this.sleep(this.getDuration());
 	}
 

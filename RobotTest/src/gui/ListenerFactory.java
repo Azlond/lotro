@@ -17,13 +17,13 @@ public class ListenerFactory {
 			}
 			//clear parameter pane
 			pane.getChildren().removeAll(pane.getChildren());
-			
+
 			Stage stage = (Stage)pane.getScene().getWindow();
-			
+
 			if(oldValue != null){ //before first selection, there is no oldValue
 				controller.getSubControllerFor(oldValue).removeEventFilters(stage);
 			}
-			
+
 			try{
 				switch(newValue){
 					case Keys.action_wait:
@@ -38,11 +38,17 @@ public class ListenerFactory {
 					case Keys.action_doubleClick:
 						pane.getChildren().add(PaneFactory.getDoubleClickPane());
 						break;
+					case Keys.action_loopStart:
+						pane.getChildren().add(PaneFactory.getLoopStartPane());
+						break;
+					case Keys.action_loopEnd:
+						pane.getChildren().add(PaneFactory.getLoopEndPane());
+						break;
 				}
 			} catch(IOException e){
 				Log.log(e);
 			}
-			
+
 			controller.getSubController().addEventFilters(stage);
 		};
 	}

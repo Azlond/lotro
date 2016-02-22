@@ -14,13 +14,13 @@ import model.ClickAction;
 public class ClickPaneController extends SubController{
 	@FXML
 	protected TextField tfClickX, tfClickY;
-	
+
 	protected EventHandler<MouseEvent> eventHandler;
-	
+
 	public StringProperty tfX(){
 		return tfClickX.textProperty();
 	}
-	
+
 	public StringProperty tfY(){
 		return tfClickY.textProperty();
 	}
@@ -36,7 +36,7 @@ public class ClickPaneController extends SubController{
 		double y = Double.valueOf(this.tfY().getValue().trim());
 		return new ClickAction(x, y);
 	}
-	
+
 	@Override
 	public void addEventFilters(Stage stage) {
 		stage.addEventFilter(MouseEvent.MOUSE_DRAGGED, this.getEventHandler());
@@ -46,11 +46,21 @@ public class ClickPaneController extends SubController{
 	public void removeEventFilters(Stage stage) {
 		stage.removeEventFilter(MouseEvent.MOUSE_DRAGGED, this.getEventHandler());
 	}
-	
+
 	protected EventHandler<MouseEvent> getEventHandler(){
 		if(eventHandler == null){
 			eventHandler = EventHandlerFactory.getFactory().getMouseDragEventHandler(tfClickX, tfClickY);
 		}
 		return eventHandler;
+	}
+
+	@Override
+	public void addEditEventFilters(Stage stage) {
+		this.addEditEventFilters(stage); //edit = add
+	}
+
+	@Override
+	public void removeEditEventFilters(Stage stage) {
+		this.removeEditEventFilters(stage); //edit = add
 	}
 }

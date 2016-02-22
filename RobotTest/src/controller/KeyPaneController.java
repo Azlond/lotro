@@ -1,9 +1,12 @@
 package controller;
 
+import data.Keys;
 import gui.EventHandlerFactory;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -11,16 +14,22 @@ import javafx.stage.Stage;
 import model.ActionObject;
 import model.KeyAction;
 import util.Log;
-import data.Keys;
 
 public class KeyPaneController extends SubController {
 	@FXML
-	private TextField tfKey;
+	private TextField tfKey, tfPressDuration;
 	@FXML
 	private Label lbKey;
-	
+	@FXML
+	private Button btnReset;
+
 	private KeyEvent keyEvent;
 	private EventHandler<KeyEvent> eventHandler;
+
+	@FXML
+	private void resetDuration(ActionEvent event){
+		tfPressDuration.setText("50");
+	}
 
 	public StringProperty tfKey(){
 		return tfKey.textProperty();
@@ -28,6 +37,10 @@ public class KeyPaneController extends SubController {
 
 	public StringProperty lbKey(){
 		return lbKey.textProperty();
+	}
+
+	public StringProperty tfPressDuration(){
+		return tfPressDuration.textProperty();
 	}
 
 	@Override
@@ -41,10 +54,18 @@ public class KeyPaneController extends SubController {
 			Log.log("KeyPaneController.getActionObject(): KeyEvent is null", Log.Level.DEBUG);
 			return null;
 		}
-		
-		return new KeyAction(this.getKeyEvent());
+
+		int duration = 0;
+		try{
+			duration = Integer.parseInt(tfPressDuration.getText());
+		} catch(NumberFormatException e){
+			Log.log("KeyPaneController.getActionObject(): duration is NaN", Log.Level.DEBUG);
+			return null;
+		}
+
+		return new KeyAction(this.getKeyEvent(), duration);
 	}
-	
+
 	public KeyEvent getKeyEvent() {
 		return keyEvent;
 	}
@@ -61,11 +82,21 @@ public class KeyPaneController extends SubController {
 	public void removeEventFilters(Stage stage) {
 		stage.removeEventFilter(KeyEvent.KEY_PRESSED, this.getEventHandler());
 	}
-	
+
 	protected EventHandler<KeyEvent> getEventHandler() {
 		if(eventHandler == null){
 			return EventHandlerFactory.getFactory().getKeyEventHandler(tfKey, lbKey, this);
 		}
 		return eventHandler;
+	}
+
+	@Override
+	public void addEditEventFilters(Stage stage) {
+		tfKey.addEventFilter(KeyEvent.KEY_PRESSED, this.getEventHandler());
+	}
+
+	@Override
+	public void removeEditEventFilters(Stage stage) {
+		tfKey.removeEventFilter(KeyEvent.KEY_PRESSED, this.getEventHandler());
 	}
 }

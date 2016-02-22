@@ -1,12 +1,16 @@
 package model;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
+import model.ActionObject.Action;
 import util.Log;
 import util.Util;
 
@@ -180,13 +184,11 @@ public class ActionQueue implements Serializable{
 	}
 
 	protected void runSequence() throws InterruptedException{
-		int index = 0;
-		for(ActionObject action : this.getActionList()){
-			this.getListView().getSelectionModel().clearAndSelect(index);
-			action.perform();
-			index++;
-		}
 		this.getListView().getSelectionModel().clearSelection();
+		List<ActionObject> sequence = this.parseActions();
+		for(ActionObject action : sequence){
+			action.perform(this.getListView());
+		}
 	}
 
 	protected void stopThreads(){
@@ -266,7 +268,7 @@ public class ActionQueue implements Serializable{
 			return this.getActionList().get(list.get(0)).getActionAsString();
 		}
 	}
-	
+
 	public void replaceSelectedAction(ActionObject object){
 		List<Integer> indices = this.getSelectedIndices();
 		if(indices.size() == 1){
@@ -280,10 +282,50 @@ public class ActionQueue implements Serializable{
 			this.getListView().setItems(FXCollections.observableArrayList(displayCopy));
 		}
 	}
-	
+
 	private List<Integer> getSelectedIndices(){
 		ObservableList<Integer> list = this.getListView().getSelectionModel().getSelectedIndices();
 		return new ArrayList<Integer>(list);
+	}
+
+	private List<ActionObject> parseActions(){
+		int index = 0;
+		List<ActionObject> parsedList = new ArrayList<>();
+		Stack<LoopStartAction> loops = new Stack<>();
+		Stack<ArrayList<ActionObject>> loopContents = new Stack<>();
+		for(ActionObject action : this.getActionList()){
+			action.setDisplayIndex(index);
+			if(action.getAction() == Action.loopStart){
+
+				loops.push((LoopStartAction)action);
+				if(loopContents.isEmpty()){
+					parsedList.add(action);
+				} else{
+					loopContents.peek().add(action);
+				}
+				loopContents.push(new ArrayList<>());
+
+			}else if(action.getAction() == Action.loopEnd){
+
+				LoopStartAction loopStart = loops.pop();
+				loopStart.setLoopContent(loopContents.pop());
+				if(loopContents.isEmpty()){
+					parsedList.add(action);
+				} else{
+					loopContents.peek().add(action);
+				}
+
+			} else{
+
+				if(loopContents.isEmpty()){
+					parsedList.add(action);
+				} else{
+					loopContents.peek().add(action);
+				}
+			}
+			index++;
+		}
+		return parsedList;
 	}
 
 	private class ActionThread extends Thread{

@@ -1,51 +1,48 @@
 package controller;
 
 import data.Keys;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.ActionObject;
-import model.WaitAction;
+import model.LoopStartAction;
+import util.Log;
 
-public class WaitPaneController extends SubController{
-	@FXML
-	private TextField tfDuration;
-	@FXML
-	private GridPane paneWait;
+public class LoopStartController extends SubController {
 
-	public StringProperty tfDuration(){
-		return tfDuration.textProperty();
-	}
+	@FXML
+	private TextField tfName, tfIterations;
 
 	@Override
 	public String getAction() {
-		return Keys.action_wait;
+		return Keys.action_loopStart;
 	}
 
 	@Override
 	public ActionObject getActionObject() {
-		return new WaitAction(Integer.valueOf(this.tfDuration().getValue()));
+		int iterations = 0;
+		try{
+			iterations = Integer.parseInt(tfIterations.getText());
+		} catch(NumberFormatException e){
+			Log.log("LoopStartController.getActionObject - tfIterations is NaN", Log.Level.DEBUG);
+		}
+		return new LoopStartAction(tfName.getText(), iterations);
 	}
 
 	@Override
 	public void addEventFilters(Stage stage) {
-		//nothing to do
 	}
 
 	@Override
 	public void removeEventFilters(Stage stage) {
-		//nothing to do
 	}
 
 	@Override
 	public void addEditEventFilters(Stage stage) {
-		//nothing to do
 	}
 
 	@Override
 	public void removeEditEventFilters(Stage stage) {
-		//nothing to do
 	}
+
 }
