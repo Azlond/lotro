@@ -13,12 +13,14 @@ import java.util.ResourceBundle;
 import data.Keys;
 import gui.ListenerFactory;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -51,6 +53,8 @@ public class StartController implements Initializable {
 	private TextField tfTimes;
 	@FXML
 	private Label lbDiscardChanges, lbSaveChanges;
+	@FXML
+	private CheckBox cbSelection;
 
 	private KeyController keyController;
 	private WaitController waitController;
@@ -64,12 +68,14 @@ public class StartController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// Combobox Items setzen und Listener bzgl. Auswahl setzen
+		final BooleanProperty selectionOnly = cbSelection.selectedProperty();
 		Platform.runLater(() -> {
 			comboAction.itemsProperty().set(FXCollections.observableArrayList(Keys.getActions()));
 			comboAction.getSelectionModel().selectedItemProperty().addListener(ListenerFactory.getComboActionsListener(paneParameter, this));
 			comboAction.setValue(Keys.getActions().get(0));
 			this.setActionQueue(new ActionQueue(lvActions));
 			lvActions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+			this.getActionQueue().setSelectionOnly(selectionOnly);
 		});
 	}
 
@@ -156,8 +162,14 @@ public class StartController implements Initializable {
 	@FXML
 	private void runActionQueue(ActionEvent event) {
 		Util.getDaemon(() -> {
+			int times = 1;
+			try{
+				times = Integer.parseInt(tfTimes.getText());
+			} catch(NumberFormatException e){
+				Log.log("StartController.runActionQueue - times is NaN", Log.Level.DEBUG);
+			}
 			this.disableListButtons();
-			this.getActionQueue().run();
+			this.getActionQueue().run(times);
 		}).start();
 	}
 

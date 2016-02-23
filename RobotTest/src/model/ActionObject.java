@@ -47,7 +47,7 @@ public abstract class ActionObject implements Serializable {
 	 * performs the associated action
 	 * @throws InterruptedException
 	 */
-	public abstract void perform(ListView<String> listView) throws InterruptedException;
+	public abstract void perform(ListView<String> listView, boolean selectionOnly) throws InterruptedException;
 
 	/**
 	 * @return a description like "click at (0|0)"

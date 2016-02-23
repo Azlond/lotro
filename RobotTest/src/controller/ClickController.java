@@ -56,11 +56,11 @@ public class ClickController extends SubController{
 
 	@Override
 	public void addEditEventFilters(Stage stage) {
-		this.addEditEventFilters(stage); //edit = add
+		this.addEventFilters(stage); //edit = add
 	}
 
 	@Override
 	public void removeEditEventFilters(Stage stage) {
-		this.removeEditEventFilters(stage); //edit = add
+		this.removeEventFilters(stage); //edit = add
 	}
 }

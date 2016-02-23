@@ -28,8 +28,14 @@ public class KeyAction extends ActionObject{
 	}
 
 	@Override
-	public void perform(ListView<String> listView) throws InterruptedException{
-		listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
+	public void perform(ListView<String> listView, boolean selectionOnly) throws InterruptedException{
+		if(!selectionOnly){
+			listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
+		}
+
+		if(selectionOnly && !listView.getSelectionModel().isSelected(this.getDisplayIndex())){
+			return;
+		}
 		Robot robot = getRobot();
 		robot.keyPress(this.getKeyCode());
 		this.sleep(pressDuration);

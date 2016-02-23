@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -23,10 +24,11 @@ public class ActionQueue implements Serializable{
 	private ArrayList<ActionObject> actionList = new ArrayList<>();
 	private ListView<String> listView;
 	private Thread runThread, runForeverThread;
+	private BooleanProperty selectionOnly;
 
 	public ActionQueue(ListView<String> listView){
 		this.setListView(listView);
-		this.setRunThread(new ActionThread());
+		this.setRunThread(new ActionThread(1));
 		this.setRunForeverThread(new ActionLoopThread());
 		Platform.runLater(() -> {
 			listView.setItems(displayList);
@@ -169,9 +171,9 @@ public class ActionQueue implements Serializable{
 		}
 	}
 
-	public void run(){
+	public void run(int times){
 		this.stopThreads();
-		this.startRunThread();
+		this.startRunThread(times);
 	}
 
 	public void runForever(){
@@ -184,10 +186,12 @@ public class ActionQueue implements Serializable{
 	}
 
 	protected void runSequence() throws InterruptedException{
-		this.getListView().getSelectionModel().clearSelection();
+		if(!this.getSelectionOnly().getValue()){
+			this.getListView().getSelectionModel().clearSelection();
+		}
 		List<ActionObject> sequence = this.parseActions();
 		for(ActionObject action : sequence){
-			action.perform(this.getListView());
+			action.perform(this.getListView(), this.getSelectionOnly().getValue());
 		}
 	}
 
@@ -233,9 +237,9 @@ public class ActionQueue implements Serializable{
 		this.listView = listView;
 	}
 
-	protected void startRunThread(){
+	protected void startRunThread(int times){
 		if(!this.getRunThread().isAlive()){
-			this.setRunThread(new ActionThread());
+			this.setRunThread(new ActionThread(times));
 			this.getRunThread().start();
 		}
 	}
@@ -329,11 +333,18 @@ public class ActionQueue implements Serializable{
 	}
 
 	private class ActionThread extends Thread{
+		int times;
+		public ActionThread(int times){
+			this.times = times;
+		}
+
 		@Override
 		public void run(){
 			synchronized(ActionQueue.this.getListView()){
 				try {
-					ActionQueue.this.runSequence();
+					for(int i = 0; i < times; i++){
+						ActionQueue.this.runSequence();
+					}
 				} catch (InterruptedException e) {
 					Log.log(e, Log.Level.TRACE);
 				} finally{
@@ -359,5 +370,13 @@ public class ActionQueue implements Serializable{
 				}
 			}
 		}
+	}
+
+	public BooleanProperty getSelectionOnly() {
+		return selectionOnly;
+	}
+
+	public void setSelectionOnly(BooleanProperty selectionOnly) {
+		this.selectionOnly = selectionOnly;
 	}
 }

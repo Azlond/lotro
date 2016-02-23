@@ -29,11 +29,17 @@ public class LoopStartAction extends ActionObject {
 	}
 
 	@Override
-	public void perform(ListView<String> listView) throws InterruptedException {
-		listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
+	public void perform(ListView<String> listView, boolean selectionOnly) throws InterruptedException {
+		if(!selectionOnly){
+			listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
+		}
+
+		if(selectionOnly && !listView.getSelectionModel().isSelected(this.getDisplayIndex())){
+			return;
+		}
 		for(int i = 0; i < iterations; i++){
 			for(ActionObject action : this.getLoopContent()){
-				action.perform(listView);
+				action.perform(listView, selectionOnly);
 			}
 		}
 	}
