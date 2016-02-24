@@ -18,7 +18,7 @@ public abstract class ActionObject implements Serializable {
 		doubleclick, click, key, wait, loopStart, loopEnd, none; //use none only for error return values
 	}
 
-	public static final int WAIT_BETWEEN_EVENTS = 30;
+	public static final int WAIT_BETWEEN_EVENTS = 200;
 	private static Robot robot;
 	protected static Robot getRobot(){
 		if(robot == null){
@@ -47,7 +47,7 @@ public abstract class ActionObject implements Serializable {
 	 * performs the associated action
 	 * @throws InterruptedException
 	 */
-	public abstract void perform(ListView<String> listView, boolean selectionOnly) throws InterruptedException;
+	public abstract void perform(ListView<String> listView) throws InterruptedException;
 
 	/**
 	 * @return a description like "click at (0|0)"

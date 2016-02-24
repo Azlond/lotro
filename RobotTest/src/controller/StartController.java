@@ -85,21 +85,16 @@ public class StartController implements Initializable {
 	 * @param event
 	 */
 	@FXML
-	void saveToFile(ActionEvent event) {
+	protected void saveToFile(ActionEvent event) {
 
 		FileChooser saveFile = new FileChooser();
 		FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("Serialization files (*.ser)", "*.ser");
 		saveFile.getExtensionFilters().add(txtFilter);
 		File file = saveFile.showSaveDialog(null);
 		if (file != null) {
-			try {
-
-				FileOutputStream fileOut = new FileOutputStream(file);
-				ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))){
 
 				out.writeObject(this.getActionQueue().getActionList());
-				out.close();
-				fileOut.close();
 
 			} catch (IOException ex) {
 				Log.log(ex);
@@ -115,7 +110,7 @@ public class StartController implements Initializable {
 	 */
 	@SuppressWarnings("unchecked")
 	@FXML
-	void loadFromFile(ActionEvent event) {
+	protected void loadFromFile(ActionEvent event) {
 
 		FileChooser openFile = new FileChooser();
 		FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("Serialization files (*.ser)", "*.ser");
@@ -123,12 +118,8 @@ public class StartController implements Initializable {
 		File file = openFile.showOpenDialog(null);
 
 		if (file != null) {
-			try {
-				FileInputStream fileIn = new FileInputStream(file);
-				ObjectInputStream in = new ObjectInputStream(fileIn);
+			try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
 				ArrayList<ActionObject> loadedActionList = (ArrayList<ActionObject>) in.readObject();
-				in.close();
-				fileIn.close();
 				this.getActionQueue().setActionList(loadedActionList);
 
 				this.getActionQueue().getDisplayList().clear();
@@ -143,7 +134,7 @@ public class StartController implements Initializable {
 	}
 
 	@FXML
-	private void runForever(ActionEvent event) {
+	protected void runForever(ActionEvent event) {
 		Util.getDaemon(() -> {
 			this.disableListButtons();
 			this.getActionQueue().runForever();
@@ -155,12 +146,12 @@ public class StartController implements Initializable {
 	}
 
 	@FXML
-	private void stop(ActionEvent event) {
+	protected void stop(ActionEvent event) {
 		this.getActionQueue().stop();
 	}
 
 	@FXML
-	private void runActionQueue(ActionEvent event) {
+	protected void runActionQueue(ActionEvent event) {
 		Util.getDaemon(() -> {
 			int times = 1;
 			try{
@@ -174,35 +165,35 @@ public class StartController implements Initializable {
 	}
 
 	@FXML
-	private void moveUp(ActionEvent event) {
+	protected void moveUp(ActionEvent event) {
 		synchronized (lvActions) {
 			this.getActionQueue().moveItems(1);
 		}
 	}
 
 	@FXML
-	private void moveDown(ActionEvent event) {
+	protected void moveDown(ActionEvent event) {
 		synchronized (lvActions) {
 			this.getActionQueue().moveItems(-1);
 		}
 	}
 
 	@FXML
-	private void deleteSelected(ActionEvent event) {
+	protected void deleteSelected(ActionEvent event) {
 		synchronized (lvActions) {
 			this.getActionQueue().removeSelectedItems();
 		}
 	}
 
 	@FXML
-	private void duplicateSelected(ActionEvent event) {
+	protected void duplicateSelected(ActionEvent event) {
 		synchronized (lvActions) {
 			this.getActionQueue().duplicateSelectedItems();
 		}
 	}
 
 	@FXML
-	private void addSequenceElement(ActionEvent event) {
+	protected void addSequenceElement(ActionEvent event) {
 		synchronized (lvActions) {
 			ActionObject newAction = this.getSubController().getActionObject();
 			this.getActionQueue().addItem(newAction);
@@ -210,7 +201,7 @@ public class StartController implements Initializable {
 	}
 
 	@FXML
-	private void editAction(ActionEvent event){
+	protected void editAction(ActionEvent event){
 		if(this.getActionQueue().getSelectedActionType().length() > 0){ //ist genau ein Item ausgewählt?
 			this.disableListButtons();
 			this.lockAction();
@@ -223,7 +214,7 @@ public class StartController implements Initializable {
 	}
 
 	@FXML
-	private void discardChanges(MouseEvent event){ //nothing happens, but all the locks are being lifted´
+	protected void discardChanges(MouseEvent event){ //nothing happens, but all the locks are being lifted´
 		if(event.getButton() != MouseButton.SECONDARY){
 			return;
 		}
@@ -240,7 +231,7 @@ public class StartController implements Initializable {
 	}
 
 	@FXML
-	private void saveChanges(MouseEvent event){
+	protected void saveChanges(MouseEvent event){
 		if(event.getButton() != MouseButton.SECONDARY){
 			return;
 		}
@@ -354,7 +345,7 @@ public class StartController implements Initializable {
 	}
 
 	protected void disableRunControl(){
-		this.lock(lvActions, true, btnRun, btnRunForever, btnStop, tfTimes);
+		this.lock(lvActions, true, btnRun, btnRunForever, btnStop, tfTimes, cbSelection);
 	}
 
 	/**

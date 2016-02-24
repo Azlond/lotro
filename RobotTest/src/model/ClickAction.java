@@ -31,19 +31,15 @@ public class ClickAction extends ActionObject {
 	}
 
 	@Override
-	public void perform(ListView<String> listView, boolean selectionOnly) throws InterruptedException {
-		if(!selectionOnly){
-			listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
-		}
-		if(selectionOnly && !listView.getSelectionModel().isSelected(this.getDisplayIndex())){
-			return;
-		}
+	public void perform(ListView<String> listView) throws InterruptedException {
+		listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
 		this.performClick();
 	}
 
 	protected void performClick() throws InterruptedException {
 		Robot robot = getRobot();
 		robot.mouseMove(this.getX(), this.getY());
+		this.sleep();
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		this.sleep();
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);

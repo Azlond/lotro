@@ -1,5 +1,8 @@
 package model;
 
+import java.awt.Robot;
+import java.awt.event.InputEvent;
+
 import javafx.scene.control.ListView;
 
 @SuppressWarnings("serial")
@@ -11,16 +14,9 @@ public class DoubleClickAction extends ClickAction {
 	}
 
 	@Override
-	public void perform(ListView<String> listView, boolean selectionOnly) throws InterruptedException{
-		if(!selectionOnly){
-			listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
-		}
-
-		if(selectionOnly && !listView.getSelectionModel().isSelected(this.getDisplayIndex())){
-			return;
-		}
-		this.performClick();
-		this.performClick();
+	public void perform(ListView<String> listView) throws InterruptedException{
+		listView.getSelectionModel().clearAndSelect(this.getDisplayIndex());
+		this.performDoubleClick();
 	}
 
 	@Override
@@ -31,5 +27,19 @@ public class DoubleClickAction extends ClickAction {
 	@Override
 	public ActionObject getCopy(){
 		return super.getCopy();
+	}
+
+	public void performDoubleClick() throws InterruptedException{
+		Robot robot = getRobot();
+		robot.mouseMove(this.getX(), this.getY());
+		this.sleep();
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		this.sleep();
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		this.sleep();
+		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+		this.sleep();
+		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+		this.sleep();
 	}
 }

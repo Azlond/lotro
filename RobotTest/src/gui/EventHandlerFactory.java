@@ -1,28 +1,30 @@
 package gui;
 
+import controller.KeyController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.*;
-import controller.KeyController;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 public class EventHandlerFactory {
 	private static EventHandlerFactory factory = new EventHandlerFactory();
 	public static EventHandlerFactory getFactory(){
 		return factory;
 	}
-	
+
 	private EventHandler<ActionEvent> addActionEventHandler;
 	public EventHandler<ActionEvent> getAddActionEventHandler(){
 		if(addActionEventHandler == null){
 			addActionEventHandler = (event) -> {
-				
+
 			};
 		}
 		return addActionEventHandler;
 	}
-	
+
 	private EventHandler<KeyEvent> keyEventHandler;
 	@SuppressWarnings("deprecation")
 	public EventHandler<KeyEvent> getKeyEventHandler(TextField tfKey, Label lbKey, KeyController controller){
@@ -50,7 +52,7 @@ public class EventHandlerFactory {
 		return mouseDragEventHandler;
 	}
 
-	
+
 	private EventHandler<MouseEvent> mouseDragDoubleClickEventHandler;
 	public EventHandler<MouseEvent> getMouseDragDoubleClickEventHandler(TextField tfX, TextField tfY){
 		if(mouseDragDoubleClickEventHandler == null){

@@ -186,12 +186,12 @@ public class ActionQueue implements Serializable{
 	}
 
 	protected void runSequence() throws InterruptedException{
-		if(!this.getSelectionOnly().getValue()){
+		if(!this.getSelectionOnly()){
 			this.getListView().getSelectionModel().clearSelection();
 		}
 		List<ActionObject> sequence = this.parseActions();
 		for(ActionObject action : sequence){
-			action.perform(this.getListView(), this.getSelectionOnly().getValue());
+			action.perform(this.getListView());
 		}
 	}
 
@@ -287,47 +287,55 @@ public class ActionQueue implements Serializable{
 		}
 	}
 
-	private List<Integer> getSelectedIndices(){
+	protected List<Integer> getSelectedIndices(){
 		ObservableList<Integer> list = this.getListView().getSelectionModel().getSelectedIndices();
 		return new ArrayList<Integer>(list);
 	}
 
-	private List<ActionObject> parseActions(){
+	protected List<ActionObject> parseActions(){
 		int index = 0;
 		List<ActionObject> parsedList = new ArrayList<>();
 		Stack<LoopStartAction> loops = new Stack<>();
 		Stack<ArrayList<ActionObject>> loopContents = new Stack<>();
-		for(ActionObject action : this.getActionList()){
-			action.setDisplayIndex(index);
-			if(action.getAction() == Action.loopStart){
-
-				loops.push((LoopStartAction)action);
-				if(loopContents.isEmpty()){
-					parsedList.add(action);
-				} else{
-					loopContents.peek().add(action);
+		try{
+			for(ActionObject action : this.getActionList()){
+				action.setDisplayIndex(index);
+				if(this.getSelectionOnly() && this.getListView().getSelectionModel().isSelected(action.getDisplayIndex())) {
+					continue;
 				}
-				loopContents.push(new ArrayList<>());
+				if(action.getAction() == Action.loopStart){
 
-			}else if(action.getAction() == Action.loopEnd){
+					loops.push((LoopStartAction)action);
+					if(loopContents.isEmpty()){
+						parsedList.add(action);
+					} else{
+						loopContents.peek().add(action);
+					}
+					loopContents.push(new ArrayList<>());
 
-				LoopStartAction loopStart = loops.pop();
-				loopStart.setLoopContent(loopContents.pop());
-				if(loopContents.isEmpty()){
-					parsedList.add(action);
+				}else if(action.getAction() == Action.loopEnd){
+
+					LoopStartAction loopStart = loops.pop();
+					loopStart.setLoopContent(loopContents.pop());
+					if(loopContents.isEmpty()){
+						parsedList.add(action);
+					} else{
+						loopContents.peek().add(action);
+					}
+
 				} else{
-					loopContents.peek().add(action);
-				}
 
-			} else{
-
-				if(loopContents.isEmpty()){
-					parsedList.add(action);
-				} else{
-					loopContents.peek().add(action);
+					if(loopContents.isEmpty()){
+						parsedList.add(action);
+					} else{
+						loopContents.peek().add(action);
+					}
 				}
+				index++;
 			}
-			index++;
+		} catch(Exception e){
+			Log.log(e, Log.Level.DEBUG);
+			parsedList = new ArrayList<>(); //no execution in case of error
 		}
 		return parsedList;
 	}
@@ -349,6 +357,7 @@ public class ActionQueue implements Serializable{
 					Log.log(e, Log.Level.TRACE);
 				} finally{
 					ActionQueue.this.getListView().notifyAll();
+					Log.log("runThread terminated", Log.Level.TRACE);
 				}
 
 			}
@@ -367,13 +376,14 @@ public class ActionQueue implements Serializable{
 					Log.log(e, Log.Level.TRACE);
 				} finally{
 					ActionQueue.this.getListView().notifyAll();
+					Log.log("runForeverThread terminated", Log.Level.TRACE);
 				}
 			}
 		}
 	}
 
-	public BooleanProperty getSelectionOnly() {
-		return selectionOnly;
+	public boolean getSelectionOnly() {
+		return selectionOnly.getValue();
 	}
 
 	public void setSelectionOnly(BooleanProperty selectionOnly) {
