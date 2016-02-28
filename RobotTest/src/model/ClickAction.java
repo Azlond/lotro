@@ -39,7 +39,7 @@ public class ClickAction extends ActionObject {
 	protected void performClick() throws InterruptedException {
 		Robot robot = getRobot();
 		robot.mouseMove(this.getX(), this.getY());
-		this.sleep();
+		this.sleep(1000);
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		this.sleep();
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
